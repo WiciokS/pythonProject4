@@ -1,37 +1,38 @@
 import pygame
-import sys
+
+from GameStatus import GameStatus
 from GameplayState import GameplayState
 from StateManager import StateManager
 
 
 class GameManager:
     def __init__(self):
-        self.state_manager = StateManager(GameplayState())
         # Initialize Pygame
         pygame.init()
 
         # Set up the display
-        screen = pygame.display.set_mode((800, 600))
+        pygame.display.set_caption("Tower Defence")
 
-        # Create a clock object to control the frame rate
-        clock = pygame.time.Clock()
+        # Set up the state manager
+        self.state_manager = StateManager(GameplayState())
 
-        # Create a tower and an enemy for demonstration
-
+    def run(self):
         # Game loop
         running = True
         while running:
-            # Ensure the program maintains a rate of 30 frames per second
-            clock.tick(144)
+            GameStatus.clock.tick(GameStatus.fps)
 
-            for event in pygame.event.get():
+            GameStatus.events = pygame.event.get()
+
+            for event in GameStatus.events:
                 if event.type == pygame.QUIT:
                     running = False
+
+            # Tick the current state
+            self.state_manager.tick()
 
             # Update the display
             pygame.display.update()
 
         # Quit Pygame
         pygame.quit()
-
-
