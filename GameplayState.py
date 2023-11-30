@@ -82,14 +82,6 @@ class GameplayState(State):
     def tick(self):
         # Tick the current substate
         self.substate_manager.tick()
-        # On ESC, pause the game
-        for event in GameStatus.events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    if self.substate_manager.current_state.state_name == StateName.PAUSED_GAMEPLAY:
-                        self.substate_manager.switch_states(self.unpaused_state_persistence)
-                    else:
-                        self.substate_manager.switch_states(PausedGameplayState())
 
     def enter(self):
         pass

@@ -1,7 +1,7 @@
 import pygame
 
 from GameStatus import GameStatus
-from GameplayState import GameplayState
+from State import StateName
 from StateManager import StateManager
 
 
@@ -14,7 +14,7 @@ class GameManager:
         pygame.display.set_caption("Tower Defence")
 
         # Set up the state manager
-        self.state_manager = StateManager(GameplayState())
+        self.state_manager = StateManager(StateName.GAMEPLAY)
 
     def run(self):
         # Game loop
