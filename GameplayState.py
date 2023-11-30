@@ -51,6 +51,10 @@ class UnpausedGameplayState(State):
         # Draw map
         self.game_map.draw(GameStatus.screen)
 
+        # Show time_ms in bottom left corner
+        time_ms_text = pygame.font.SysFont("Arial", 20).render(str(self.context.time_ms), True, (0, 0, 0))
+        GameStatus.screen.blit(time_ms_text, (0, GameStatus.screen.get_height() - time_ms_text.get_height()))
+
         # Draw the towers and the enemies
         for tower in self.towers:
             tower.draw(GameStatus.screen)
