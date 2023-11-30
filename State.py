@@ -24,3 +24,8 @@ class State(ABC):
     @abstractmethod
     def exit(self):
         pass
+
+    def switch_states(self, state):
+        self.exit()
+        self.context.current_state = state
+        self.context.current_state.enter()
