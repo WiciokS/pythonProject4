@@ -39,7 +39,7 @@ class UnpausedGameplayState(State):
 
     def tick(self):
         # Increase time
-        self.time_ms += GameStatus.clock.get_time()
+        self.context.time_ms += GameStatus.clock.get_time()
 
         # Draw map
         self.game_map.draw(GameStatus.screen)
