@@ -3,7 +3,6 @@ import pygame
 from Enemy import Enemy
 from GameManager import GameStatus
 from Maps.TestMap import TestMap
-from StateManager import StateManager
 from Tower import Tower
 from State import State, StateName
 
@@ -32,8 +31,6 @@ class UnpausedGameplayState(State):
         super().__init__(StateName.UNPAUSED_GAMEPLAY, context)
         self.towers = []
         self.enemies = []
-        self.time_ms = time_ms
-        super().__init__(StateName.UNPAUSED_GAMEPLAY)
 
         # TEMPORARY
         self.game_map = TestMap()
