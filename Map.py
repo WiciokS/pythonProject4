@@ -1,5 +1,4 @@
 import pygame
-import sys
 
 from Cell import Cell
 
