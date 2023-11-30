@@ -7,9 +7,9 @@ from Tower import Tower
 from State import State, StateName
 
 
-class PausedGameplayState(State):
+class PausedState(State):
     def __init__(self, context_state_manager):
-        super().__init__(StateName.PAUSED_GAMEPLAY, context_state_manager)
+        super().__init__(StateName.PAUSE, context_state_manager)
 
     def tick(self):
         GameStatus.screen.fill((0, 0, 0))

@@ -1,4 +1,6 @@
-from GameplayState import GameplayState, UnpausedGameplayState, PausedGameplayState
+import pygame
+
+from GameplayState import GameplayState, PausedState
 from State import StateName
 
 
@@ -7,10 +9,8 @@ class StateFactory:
     def create_state(state_name, context_state_manager):
         if state_name == StateName.GAMEPLAY:
             return GameplayState(context_state_manager)
-        elif state_name == StateName.UNPAUSED_GAMEPLAY:
-            return UnpausedGameplayState(context_state_manager)
-        elif state_name == StateName.PAUSED_GAMEPLAY:
-            return PausedGameplayState(context_state_manager)
+        elif state_name == StateName.PAUSE:
+            return PausedState(context_state_manager)
         else:
             raise ValueError("Invalid state name")
 

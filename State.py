@@ -12,6 +12,8 @@ class State(ABC):
     def __init__(self, state_name, context_state_manager):
         self.state_name = state_name
         self.context_state_manager = context_state_manager
+        self.substates = []
+        self.parent_states = []
         pass
 
     @abstractmethod

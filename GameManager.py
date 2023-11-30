@@ -1,6 +1,5 @@
 import pygame
 
-from GameStatus import GameStatus
 from State import StateName
 from StateManager import StateManager
 
