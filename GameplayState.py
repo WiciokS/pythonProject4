@@ -38,6 +38,13 @@ class UnpausedGameplayState(State):
         self.enemies.append(Enemy(self.game_map.get_path()))
 
     def tick(self):
+        # On ESC, pause the game
+        for event in GameStatus.events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.context.persistent_state = self
+                    self.switch_states(PausedGameplayState(self.context))
+
         # Increase time
         self.context.time_ms += GameStatus.clock.get_time()
 
