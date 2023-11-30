@@ -9,8 +9,8 @@ from State import State, StateName
 
 
 class PausedGameplayState(State):
-    def __init__(self):
-        super().__init__(StateName.PAUSED_GAMEPLAY)
+    def __init__(self, context):
+        super().__init__(StateName.PAUSED_GAMEPLAY, context)
 
     def tick(self):
         pass
@@ -24,7 +24,8 @@ class PausedGameplayState(State):
 
 
 class UnpausedGameplayState(State):
-    def __init__(self, time_ms):
+    def __init__(self, context):
+        super().__init__(StateName.UNPAUSED_GAMEPLAY, context)
         self.towers = []
         self.enemies = []
         self.time_ms = time_ms
@@ -64,6 +65,8 @@ class GameplayState(State):
         self.unpaused_state_persistence = UnpausedGameplayState(self.time_ms)
         self.substate_manager = StateManager(self.unpaused_state_persistence)
         super().__init__(StateName.GAMEPLAY)
+    def __init__(self, context):
+        super().__init__(StateName.GAMEPLAY, context)
 
     def tick(self):
         # Tick the current substate

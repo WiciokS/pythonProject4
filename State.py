@@ -10,9 +10,11 @@ class StateName(Enum):
 
 
 class State(ABC):
-    def __init__(self, state_name):
+    def __init__(self, state_name, context):
         self.state_name = state_name
+        self.context = context
         pass
+
     @abstractmethod
     def tick(self):
         pass
