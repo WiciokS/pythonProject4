@@ -13,7 +13,7 @@ class PausedGameplayState(State):
         super().__init__(StateName.PAUSED_GAMEPLAY, context)
 
     def tick(self):
-        pass
+        GameStatus.screen.fill((0, 0, 0))
         # On ESC, unpause the game
         for event in GameStatus.events:
             if event.type == pygame.KEYDOWN:
@@ -21,8 +21,7 @@ class PausedGameplayState(State):
                     self.switch_states(self.context.persistent_state)
 
     def enter(self):
-        # clear the screen
-        GameStatus.screen.fill((0, 0, 0))
+        pass
 
     def exit(self):
         pass
