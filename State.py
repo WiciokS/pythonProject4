@@ -5,8 +5,7 @@ from enum import Enum
 class StateName(Enum):
     MAIN_MENU = 0
     GAMEPLAY = 1
-    UNPAUSED_GAMEPLAY = 10
-    PAUSED_GAMEPLAY = 11
+    PAUSE = 2
 
 
 class State(ABC):
