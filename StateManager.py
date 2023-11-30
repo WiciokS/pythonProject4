@@ -1,16 +1,16 @@
-from GameplayState import GameplayState, UnpausedGameplayState, PausedGameplayState
+from GameplayState import GameplayState, UnpausedGameplaySubState, PausedGameplaySubState
 from State import StateName
 
 
 class StateFactory:
     @staticmethod
-    def create_state(state_name, context):
+    def create_state(state_name, context_state_manager):
         if state_name == StateName.GAMEPLAY:
-            return GameplayState(context)
+            return GameplayState(context_state_manager)
         elif state_name == StateName.UNPAUSED_GAMEPLAY:
-            return UnpausedGameplayState(context)
+            return UnpausedGameplaySubState(context_state_manager)
         elif state_name == StateName.PAUSED_GAMEPLAY:
-            return PausedGameplayState(context)
+            return PausedGameplaySubState(context_state_manager)
         else:
             raise ValueError("Invalid state name")
 

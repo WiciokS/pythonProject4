@@ -10,9 +10,9 @@ class StateName(Enum):
 
 
 class State(ABC):
-    def __init__(self, state_name, context):
+    def __init__(self, state_name, context_state_manager):
         self.state_name = state_name
-        self.context = context
+        self.context_state_manager = context_state_manager
         pass
 
     @abstractmethod
@@ -29,5 +29,5 @@ class State(ABC):
 
     def switch_states(self, state):
         self.exit()
-        self.context.current_state = state
-        self.context.current_state.enter()
+        self.context_state_manager.current_state = state
+        self.context_state_manager.current_state.enter()

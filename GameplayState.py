@@ -7,9 +7,9 @@ from Tower import Tower
 from State import State, StateName
 
 
-class PausedGameplayState(State):
-    def __init__(self, context):
-        super().__init__(StateName.PAUSED_GAMEPLAY, context)
+class PausedGameplaySubState(State):
+    def __init__(self, context_state_manager):
+        super().__init__(StateName.PAUSED_GAMEPLAY, context_state_manager)
 
     def tick(self):
         GameStatus.screen.fill((0, 0, 0))
@@ -17,7 +17,7 @@ class PausedGameplayState(State):
         for event in GameStatus.events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.switch_states(self.context.persistent_state)
+                    self.switch_states(self.context_state_manager.persistent_state)
 
     def enter(self):
         pass
@@ -26,9 +26,9 @@ class PausedGameplayState(State):
         pass
 
 
-class UnpausedGameplayState(State):
-    def __init__(self, context):
-        super().__init__(StateName.UNPAUSED_GAMEPLAY, context)
+class UnpausedGameplaySubState(State):
+    def __init__(self, context_state_manager):
+        super().__init__(StateName.UNPAUSED_GAMEPLAY, context_state_manager)
         self.towers = []
         self.enemies = []
 
@@ -42,17 +42,17 @@ class UnpausedGameplayState(State):
         for event in GameStatus.events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.context.persistent_state = self
-                    self.switch_states(PausedGameplayState(self.context))
+                    self.context_state_manager.persistent_state = self
+                    self.switch_states(PausedGameplaySubState(self.context_state_manager))
 
         # Increase time
-        self.context.time_ms += GameStatus.clock.get_time()
+        self.context_state_manager.time_ms += GameStatus.clock.get_time()
 
         # Draw map
         self.game_map.draw(GameStatus.screen)
 
         # Show time_ms in bottom left corner
-        time_ms_text = pygame.font.SysFont("Arial", 20).render(str(self.context.time_ms), True, (0, 0, 0))
+        time_ms_text = pygame.font.SysFont("Arial", 20).render(str(self.context_state_manager.time_ms), True, (0, 0, 0))
         GameStatus.screen.blit(time_ms_text, (0, GameStatus.screen.get_height() - time_ms_text.get_height()))
 
         # Draw the towers and the enemies
@@ -72,8 +72,8 @@ class UnpausedGameplayState(State):
 
 
 class GameplayState(State):
-    def __init__(self, context):
-        super().__init__(StateName.GAMEPLAY, context)
+    def __init__(self, context_state_manager):
+        super().__init__(StateName.GAMEPLAY, context_state_manager)
         from StateManager import StateManager  # This import is here to avoid a circular import
         self.substate_manager = StateManager(StateName.UNPAUSED_GAMEPLAY)
         self.substate_manager.persistent_state = UnpausedGameplayState(context)
