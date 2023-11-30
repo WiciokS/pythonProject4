@@ -65,7 +65,7 @@ class UnpausedGameplayState(State):
             enemy.draw(GameStatus.screen)
 
     def enter(self):
-        GameStatus.fps = 144
+        pass
 
     def exit(self):
         pass
