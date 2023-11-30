@@ -18,6 +18,7 @@ class StateFactory:
 class StateManager:
     def __init__(self, default_state):
         self.current_state = default_state
+        self.time_ms = 0
         self.persistent_state = None
         self.current_state.enter()
         pass
