@@ -3,6 +3,8 @@ import pygame
 
 class Cell:
     screen_size = 50
+    buildable_color = (0, 255, 0)
+    not_buildable_color = (255, 0, 0)
 
     def __init__(self, logical_map_x, logical_map_y, buildable=True, screen_size=50):
         self.logical_map_x = logical_map_x
@@ -23,6 +25,7 @@ class Cell:
         return self.logical_map_y
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (0, 0, 0),
+        color = Cell.buildable_color if self.buildable else Cell.not_buildable_color
+        pygame.draw.rect(screen, color,
                          (self.get_screen_x() - self.screen_size / 2, self.get_screen_y() - self.screen_size / 2,
                           self.screen_size, self.screen_size), 1)
