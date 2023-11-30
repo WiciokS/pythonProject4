@@ -13,7 +13,7 @@ class GameManager:
         # Set up the display
         pygame.display.set_caption("Tower Defence")
 
-        # Set up the state manager
+        # Set up the state manager (GAMEPLAY is TEMPORARY, MAIN_MENU SHOULD BE FIRST)
         self.state_manager = StateManager(StateName.GAMEPLAY)
 
     def run(self):
