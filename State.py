@@ -9,16 +9,18 @@ class StateName(Enum):
 
 
 class State(ABC):
-    def __init__(self, state_name, context_state_manager):
+    def __init__(self, state_name, context_state_manager, root_state=True):
+        self.root_state = root_state
         self.state_name = state_name
         self.context_state_manager = context_state_manager
-        self.substates = []
-        self.parent_states = []
+        self.substate = None
+        self.parent_state = None
         pass
 
     @abstractmethod
     def tick(self):
-        pass
+        if self.substate is not None:
+            self.substate.tick()
 
     @abstractmethod
     def enter(self):
@@ -30,5 +32,15 @@ class State(ABC):
 
     def switch_states(self, state):
         self.exit()
-        self.context_state_manager.current_state = state
-        self.context_state_manager.current_state.enter()
+        if self.root_state:
+            self.context_state_manager.current_state = state
+            self.context_state_manager.current_state.enter()
+        elif self.parent_state is not None:
+            self.parent_state.switch_substate(state)
+
+    def switch_substate(self, state):
+        if self.substate is not None:
+            self.substate.exit()
+        self.substate = state
+        self.substate.parent_state = self
+        self.substate.enter()

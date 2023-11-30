@@ -8,10 +8,14 @@ from State import State, StateName
 
 class PausedState(State):
     def __init__(self, context_state_manager):
-        super().__init__(StateName.PAUSE, context_state_manager)
+        super().__init__(StateName.PAUSE, context_state_manager, root_state=True)
 
     def tick(self):
+        super().tick()
+
+        # Draw a black screen
         self.context_state_manager.screen.fill((0, 0, 0))
+
         # On ESC, unpause the game
         for event in self.context_state_manager.events:
             if event.type == pygame.KEYDOWN:
@@ -27,7 +31,8 @@ class PausedState(State):
 
 class GameplayState(State):
     def __init__(self, context_state_manager):
-        super().__init__(StateName.GAMEPLAY, context_state_manager)
+        super().__init__(StateName.GAMEPLAY, context_state_manager, root_state=True)
+
         # Set the persistent state to gameplay
         self.context_state_manager.persistent_state = self
 
@@ -41,12 +46,14 @@ class GameplayState(State):
         self.enemies.append(Enemy(self.game_map.get_path()))
 
     def tick(self):
+        super().tick()
+
         # On ESC, pause the game
         for event in self.context_state_manager.events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.context_state_manager.persistent_state = self
-                    from StateManager import StateFactory # Avoid circular import
+                    from StateManager import StateFactory  # Avoid circular import
                     self.switch_states(StateFactory.create_state(StateName.PAUSE, self.context_state_manager))
 
         # Increase time
