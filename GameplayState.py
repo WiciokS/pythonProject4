@@ -14,6 +14,11 @@ class PausedGameplayState(State):
 
     def tick(self):
         pass
+        # On ESC, unpause the game
+        for event in GameStatus.events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.switch_states(self.context.persistent_state)
 
     def enter(self):
         # clear the screen
@@ -60,13 +65,12 @@ class UnpausedGameplayState(State):
 
 
 class GameplayState(State):
-    def __init__(self):
-        self.time_ms = 0
-        self.unpaused_state_persistence = UnpausedGameplayState(self.time_ms)
-        self.substate_manager = StateManager(self.unpaused_state_persistence)
-        super().__init__(StateName.GAMEPLAY)
     def __init__(self, context):
         super().__init__(StateName.GAMEPLAY, context)
+        from StateManager import StateManager  # This import is here to avoid a circular import
+        self.substate_manager = StateManager(StateName.UNPAUSED_GAMEPLAY)
+        self.substate_manager.persistent_state = UnpausedGameplayState(context)
+        self.substate_manager.current_state.enter()
 
     def tick(self):
         # Tick the current substate
