@@ -1,24 +1,34 @@
 import pygame
 
-from Cell import Cell
+from Maps.Base.Cell import Cell
 
 
-class Map:
-    def __init__(self, path_logical_map_coordinates, cells):
+class Map(pygame.sprite.Sprite):
+    def __init__(self, path_logical_map_coordinates, cells, map_sprite):
+        pygame.sprite.Sprite.__init__(self)
+        self.map_sprite = map_sprite
         self.cells = cells
         self.path_cells = self.convert_logical_map_coordinates_to_cells(path_logical_map_coordinates)
+        if len(self.path_cells) < 2:
+            raise Exception("Path must have at least two points.")
+        for i in range(len(self.path_cells) - 1):
+            min_x = min(self.path_cells[i].get_logical_map_x(), self.path_cells[i+1].get_logical_map_x())
+            max_x = max(self.path_cells[i].get_logical_map_x(), self.path_cells[i+1].get_logical_map_x())
+            min_y = min(self.path_cells[i].get_logical_map_y(), self.path_cells[i+1].get_logical_map_y())
+            max_y = max(self.path_cells[i].get_logical_map_y(), self.path_cells[i+1].get_logical_map_y())
+            for y in range(min_y, max_y + 1):
+                for x in range(min_x, max_x + 1):
+                    for cell in self.cells:
+                        if cell.get_logical_map_x() == x and cell.get_logical_map_y() == y:
+                            cell.buildable = False
 
     def draw(self, screen):
         # Clear screen
-        screen.fill((128, 128, 128))
+        screen.blit(self.map_sprite, (0, 0))
 
         # Draw cell outlines
         for cell in self.cells:
             cell.draw(screen)
-
-        # Check if the path has at least two points to draw a line
-        if len(self.path_cells) > 1:
-            pygame.draw.lines(screen, (0, 0, 0), False, self.convert_cells_to_screen_coordinates(self.path_cells), 5)
 
     def get_path(self):
         return self.path_cells
@@ -62,7 +72,6 @@ class Map:
 
     @staticmethod
     def convert_screen_coordinates_to_logical_map_coordinates(screen_coordinates):
-        logical_coordinates = []
-        for coordinate in screen_coordinates:
-            logical_coordinates.append((int(coordinate[0] / Cell.screen_size), int(coordinate[1] / Cell.screen_size)))
+        logical_coordinates = [(int(screen_coordinates[0] / Cell.screen_size),
+                                int(screen_coordinates[1] / Cell.screen_size))]
         return logical_coordinates

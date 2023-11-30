@@ -1,7 +1,7 @@
 import pygame
 
-from State import StateName
-from StateManager import StateManager
+from States.State import StateName
+from States.StateManager import StateManager
 
 
 class GameManager:

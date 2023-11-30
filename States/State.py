@@ -5,6 +5,8 @@ from enum import Enum
 class StateName(Enum):
     MAIN_MENU = 0
     GAMEPLAY = 1
+    ACTIVE_GAME = 10
+    BUILD_GAME = 11
     PAUSE = 2
 
 
@@ -31,16 +33,20 @@ class State(ABC):
         pass
 
     def switch_states(self, state):
-        self.exit()
+        if self.context_state_manager.persistent_state is not self:
+            self.exit()
         if self.root_state:
             self.context_state_manager.current_state = state
-            self.context_state_manager.current_state.enter()
+            if self.context_state_manager.persistent_state is not self.context_state_manager.current_state:
+                self.context_state_manager.current_state.enter()
         elif self.parent_state is not None:
             self.parent_state.switch_substate(state)
 
     def switch_substate(self, state):
         if self.substate is not None:
-            self.substate.exit()
+            if self.context_state_manager.persistent_state is not self:
+                self.substate.exit()
         self.substate = state
         self.substate.parent_state = self
-        self.substate.enter()
+        if self.context_state_manager.persistent_state is not self.substate:
+            self.substate.enter()
