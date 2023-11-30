@@ -17,16 +17,8 @@ class GameManager:
 
     def run(self):
         # Game loop
-        running = True
-        while running:
-            GameStatus.clock.tick(GameStatus.fps)
-
-            GameStatus.events = pygame.event.get()
-
-            for event in GameStatus.events:
-                if event.type == pygame.QUIT:
-                    running = False
-
+        self.state_manager.app_running = True
+        while self.state_manager.app_running:
             # Tick the current state
             self.state_manager.tick()
 
