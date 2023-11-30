@@ -76,7 +76,7 @@ class GameplayState(State):
         super().__init__(StateName.GAMEPLAY, context_state_manager)
         from StateManager import StateManager  # This import is here to avoid a circular import
         self.substate_manager = StateManager(StateName.UNPAUSED_GAMEPLAY)
-        self.substate_manager.persistent_state = UnpausedGameplayState(context)
+        self.substate_manager.persistent_state = self.substate_manager.current_state
         self.substate_manager.current_state.enter()
 
     def tick(self):
