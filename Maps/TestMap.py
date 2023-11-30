@@ -11,5 +11,5 @@ class TestMap(Map):
                 cells.append(Cell(x, y, True))
 
         # Create path for enemies
-        enemy_path_logical_coordinates = [(0, 0), (9, 0), (9, 9), (0, 9)]
-        super().__init__(enemy_path_logical_coordinates, cells)
+        enemy_path_logical_map_coordinates = [(0, 0), (9, 0), (9, 9), (0, 9)]
+        super().__init__(enemy_path_logical_map_coordinates, cells)

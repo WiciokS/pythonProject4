@@ -2,26 +2,27 @@ import pygame
 
 
 class Cell:
-    size = 50
+    screen_size = 50
 
-    def __init__(self, logicalX, logicalY, buildable=True, size=50):
-        self.logicalX = logicalX
-        self.logicalY = logicalY
-        Cell.size = size
+    def __init__(self, logical_map_x, logical_map_y, buildable=True, screen_size=50):
+        self.logical_map_x = logical_map_x
+        self.logical_map_y = logical_map_y
+        Cell.screen_size = screen_size
         self.buildable = buildable
 
-    def get_map_x(self):
-        return self.size / 2 + self.size * self.logicalX
+    def get_screen_x(self):
+        return self.screen_size / 2 + self.screen_size * self.logical_map_x
 
-    def get_map_y(self):
-        return self.size / 2 + self.size * self.logicalY
+    def get_screen_y(self):
+        return self.screen_size / 2 + self.screen_size * self.logical_map_y
 
-    def get_logical_x(self):
-        return self.logicalX
+    def get_logical_map_x(self):
+        return self.logical_map_x
 
-    def get_logical_y(self):
-        return self.logicalY
+    def get_logical_map_y(self):
+        return self.logical_map_y
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (0, 0, 0), (self.get_map_x() - self.size / 2, self.get_map_y() - self.size / 2,
-                                             self.size, self.size), 1)
+        pygame.draw.rect(screen, (0, 0, 0),
+                         (self.get_screen_x() - self.screen_size / 2, self.get_screen_y() - self.screen_size / 2,
+                          self.screen_size, self.screen_size), 1)
