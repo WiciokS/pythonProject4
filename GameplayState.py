@@ -7,7 +7,7 @@ from Tower import Tower
 from State import State, StateName
 
 
-class PausedGameplaySubState(State):
+class PausedGameplayState(State):
     def __init__(self, context_state_manager):
         super().__init__(StateName.PAUSED_GAMEPLAY, context_state_manager)
 
@@ -26,7 +26,7 @@ class PausedGameplaySubState(State):
         pass
 
 
-class UnpausedGameplaySubState(State):
+class UnpausedGameplayState(State):
     def __init__(self, context_state_manager):
         super().__init__(StateName.UNPAUSED_GAMEPLAY, context_state_manager)
         self.towers = []
@@ -43,7 +43,7 @@ class UnpausedGameplaySubState(State):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.context_state_manager.persistent_state = self
-                    self.switch_states(PausedGameplaySubState(self.context_state_manager))
+                    self.switch_states(PausedGameplayState(self.context_state_manager))
 
         # Increase time
         self.context_state_manager.time_ms += GameStatus.clock.get_time()

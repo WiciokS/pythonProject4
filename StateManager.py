@@ -1,4 +1,4 @@
-from GameplayState import GameplayState, UnpausedGameplaySubState, PausedGameplaySubState
+from GameplayState import GameplayState, UnpausedGameplayState, PausedGameplayState
 from State import StateName
 
 
@@ -8,9 +8,9 @@ class StateFactory:
         if state_name == StateName.GAMEPLAY:
             return GameplayState(context_state_manager)
         elif state_name == StateName.UNPAUSED_GAMEPLAY:
-            return UnpausedGameplaySubState(context_state_manager)
+            return UnpausedGameplayState(context_state_manager)
         elif state_name == StateName.PAUSED_GAMEPLAY:
-            return PausedGameplaySubState(context_state_manager)
+            return PausedGameplayState(context_state_manager)
         else:
             raise ValueError("Invalid state name")
 
