@@ -30,12 +30,19 @@ class Mage(Tower):
                     self.possible_targets.remove(enemy)
                     if self.target == enemy:
                         self.target = None
+            if self.target is enemy:
+                if not self.is_in_range(enemy):
+                    self.target = None
         # If there is no target, pick one
         if self.target is None:
             if len(self.possible_targets) > 0:
                 self.target = self.possible_targets[0]
 
-        self.action_cooldown_ms_interactive -= self.state_context.game_var.level.clock.get_time()
+        # If target not in possible targets, remove it
+        if self.target is not None:
+            if self.target not in self.possible_targets:
+                self.target = None
+
         self.action_cooldown_ms_interactive -= self.state_context.app_var.app_clock.get_time()
 
         if self.target is not None:
