@@ -4,19 +4,19 @@ from enum import Enum
 
 class StateFactory:
     @staticmethod
-    def create_state(state_name, context_state_manager):
+    def create_state(state_name, state_context):
         if state_name == StateName.GAMEPLAY:
             from States.GameplayStates import GameplayState
-            return GameplayState(context_state_manager)
+            return GameplayState(state_context)
         elif state_name == StateName.PAUSE:
             from States.MenuStates import PausedState
-            return PausedState(context_state_manager)
+            return PausedState(state_context)
         elif state_name == StateName.ACTIVE_GAME:
             from States.GameplayStates import ActiveGameState
-            return ActiveGameState(context_state_manager)
+            return ActiveGameState(state_context)
         elif state_name == StateName.PREPARE_GAME:
             from States.GameplayStates import PrepareGameState
-            return PrepareGameState(context_state_manager)
+            return PrepareGameState(state_context)
         else:
             raise ValueError("Invalid state name")
 

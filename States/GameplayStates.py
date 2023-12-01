@@ -4,8 +4,8 @@ from States.State import State, StateName, StateFactory
 
 
 class PrepareGameState(State):
-    def __init__(self, context_state_manager):
-        super().__init__(StateName.PREPARE_GAME, context_state_manager, root_state=False)
+    def __init__(self, state_context):
+        super().__init__(StateName.PREPARE_GAME, state_context, root_state=False)
 
     def tick(self):
         # Make tower sprite follow mouse
@@ -35,11 +35,11 @@ class PrepareGameState(State):
 
 
 class ActiveGameState(State):
-    def __init__(self, context_state_manager):
-        super().__init__(StateName.ACTIVE_GAME, context_state_manager, root_state=False)
+    def __init__(self, state_context):
+        super().__init__(StateName.ACTIVE_GAME, state_context, root_state=False)
 
     def tick(self):
-        self.state_context.level.tick()
+        self.state_context.game_var.level.tick()
 
     def enter(self):
         pass
@@ -49,8 +49,8 @@ class ActiveGameState(State):
 
 
 class GameplayState(State):
-    def __init__(self, context_state_manager):
-        super().__init__(StateName.GAMEPLAY, context_state_manager, root_state=True)
+    def __init__(self, state_context):
+        super().__init__(StateName.GAMEPLAY, state_context, root_state=True)
 
     def tick(self):
         # On ESC, pause the game

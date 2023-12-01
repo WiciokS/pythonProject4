@@ -4,8 +4,8 @@ from States.State import State, StateName
 
 
 class PausedState(State):
-    def __init__(self, context_state_manager):
-        super().__init__(StateName.PAUSE, context_state_manager, root_state=True)
+    def __init__(self, state_context):
+        super().__init__(StateName.PAUSE, state_context, root_state=True)
 
     def tick(self):
         super().tick()
