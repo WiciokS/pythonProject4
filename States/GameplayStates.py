@@ -114,7 +114,7 @@ class GameplayState(State):
         for area in self.state_context.game_var.input_areas:
             if area.inside(mouse_pos):
                 area.tick()
-                area.draw(self.state_context.app_var.screen)
+            area.draw(self.state_context.app_var.screen)
 
         super().tick()
 

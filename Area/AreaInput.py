@@ -52,6 +52,6 @@ class AreaInput:
     def process_mouse_input_event(self, event):
         pass
 
+    @abstractmethod
     def draw(self, screen):
-        if self.AreaName == AreaName.MENU:
-            screen.fill((0, 0, 0), (self.top_left_x, self.top_left_y, self.bottom_right_x, self.bottom_right_y))
+        pass

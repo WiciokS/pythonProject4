@@ -2,6 +2,7 @@ from Area.AreaInput import AreaInput, AreaName
 
 
 class MenuAreaInput(AreaInput):
+
     def tick(self):
         pass
 
@@ -9,4 +10,7 @@ class MenuAreaInput(AreaInput):
         super().__init__(state_context, AreaName.MENU, top_left_x, top_left_y, width, height)
 
     def process_mouse_input_event(self, event):
+        pass
+
+    def draw(self, screen):
         pass

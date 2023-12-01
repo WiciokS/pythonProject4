@@ -71,3 +71,6 @@ class MapAreaInput(AreaInput):
                 else:
                     self.state_context.game_var.selected_tower = None
                     return
+
+    def draw(self, screen):
+        pass
