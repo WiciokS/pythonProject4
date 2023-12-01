@@ -19,6 +19,9 @@ class Enemy(pygame.sprite.Sprite):
         self.screen_position = pygame.Vector2((path_cells[0].get_screen_x(), path_cells[0].get_screen_y()))
 
     def tick(self):
+        if self.health <= 0:
+            self.death()
+            return
         self.move()
 
     def move(self):
@@ -54,6 +57,17 @@ class Enemy(pygame.sprite.Sprite):
             screen.blit(self.move_anim.get_current_frame(), self.rect)
         else:
             screen.blit(self.default_sprite, self.rect)
+
+    def death(self):
+        self.remove()
+
+    def remove(self):
+        self.state_context.game_var.level.deployed_enemies.remove(self)
+        for tower in self.state_context.game_var.level.deployed_towers:
+            if tower.target == self:
+                tower.target = None
+                tower.possible_targets.remove(self)
+        del self
 
     def at_end_of_path(self):
         return self.path_index > len(self.path_cells) - 1

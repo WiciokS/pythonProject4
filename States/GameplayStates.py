@@ -75,27 +75,18 @@ class GameplayState(State):
         for enemy in self.state_context.game_var.level.deployed_enemies:
             # Orc the enemy if it's not at the end of the path
             if not enemy.at_end_of_path():
-                if enemy.health <= 0:
-                    self.state_context.game_var.level.deployed_enemies.remove(enemy)
-                    for tower in self.state_context.game_var.level.deployed_towers:
-                        if tower.target is enemy:
-                            tower.target = None
-                            tower.possible_targets.remove(enemy)
-                    del enemy
-                    continue
                 enemy.tick()
+                if enemy is None:
+                    continue
                 enemy.draw(self.state_context.app_var.screen)
             else:
-                self.state_context.game_var.level.deployed_enemies.remove(enemy)
-                del enemy
+                enemy.remove()
 
         for projectile in self.state_context.game_var.level.projectiles:
-            if projectile.on_target():
-                self.state_context.game_var.level.projectiles.remove(projectile)
-                del projectile
-            else:
-                projectile.tick()
-                projectile.draw(self.state_context.app_var.screen)
+            projectile.tick()
+            if projectile is None:
+                continue
+            projectile.draw(self.state_context.app_var.screen)
 
         for event in self.state_context.app_var.events:
             if event.type == pygame.KEYUP:

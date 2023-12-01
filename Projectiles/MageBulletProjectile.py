@@ -16,4 +16,5 @@ class MageBulletProjectile(Projectile):
 
     def hit(self):
         self.target.health -= self.damage
+        self.remove()
 

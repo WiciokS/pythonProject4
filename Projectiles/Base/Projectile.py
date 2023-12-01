@@ -42,5 +42,9 @@ class Projectile(Sprite):
     def hit(self):
         pass
 
+    def remove(self):
+        self.state_context.game_var.level.projectiles.remove(self)
+        del self
+
     def on_target(self):
         return self.target.screen_position == self.screen_position
