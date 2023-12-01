@@ -4,8 +4,8 @@ from Maps.TestMap import TestMap
 
 
 class LevelBuilder:
-    def __init__(self, clock=pygame.time.Clock()):
-        self.level = Level(clock)
+    def __init__(self, state_context):
+        self.level = Level(state_context)
 
     @staticmethod
     def create_level_map(map_name):
@@ -41,8 +41,8 @@ class LevelBuilder:
 
 
 class Level:
-    def __init__(self, clock):
-        self.clock = clock
+    def __init__(self, state_context):
+        self.state_context = state_context
         self.time_ms = 0
         self.map = None
 
@@ -67,12 +67,9 @@ class Level:
         self.available_enemies_deployed_times = []  # How many times have each enemy been deployed
 
     def tick(self):
-        self.clock.tick()
-        if self.clock.get_time() > 200:
-            self.clock.tick()
-        self.time_ms += self.clock.get_time()
+        self.time_ms += self.state_context.app_var.app_clock.get_time()
         for i in range(len(self.available_enemies)):
-            self.available_enemies_cooldown_interactive[i] -= self.clock.get_time()
+            self.available_enemies_cooldown_interactive[i] -= self.state_context.app_var.app_clock.get_time()
             if self.available_enemies_cooldown_interactive[i] <= 0:
                 self.deploy_enemy(self.available_enemies[i])
                 self.available_enemies_cooldown_interactive[i] = self.available_enemies_cooldown_constant[i]
@@ -81,4 +78,4 @@ class Level:
         self.deployed_towers.append(tower(cell))
 
     def deploy_enemy(self, enemy):
-        self.deployed_enemies.append(enemy(self.map.path_cells))
+        self.deployed_enemies.append(enemy(self.state_context, self.map.path_cells))

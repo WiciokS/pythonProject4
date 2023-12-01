@@ -36,6 +36,7 @@ class Mage(Tower):
                 self.target = self.possible_targets[0]
 
         self.action_cooldown_ms_interactive -= self.state_context.game_var.level.clock.get_time()
+        self.action_cooldown_ms_interactive -= self.state_context.app_var.app_clock.get_time()
 
         if self.target is not None:
             return True
@@ -43,5 +44,6 @@ class Mage(Tower):
 
     def action(self):
         self.action_anim.play()
-        self.state_context.game_var.level.projectiles.append(MageBulletProjectile(self.target, self.screen_position))
+        self.state_context.game_var.level.projectiles.append(
+            MageBulletProjectile(self.state_context, self.target, self.screen_position))
 

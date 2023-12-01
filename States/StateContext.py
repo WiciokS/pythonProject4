@@ -17,7 +17,7 @@ class GameVar:
         self.input_areas = []
 
         # TODO: Remove this
-        level_builder = LevelBuilder(pygame.time.Clock())
+        level_builder = LevelBuilder(self.state_context)
         level_builder.add_map("TestMap")
         level_builder.add_available_enemy(Goblin)
         level_builder.add_available_enemy(Orc)

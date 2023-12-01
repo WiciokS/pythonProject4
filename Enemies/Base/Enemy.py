@@ -9,8 +9,9 @@ class Enemy(pygame.sprite.Sprite):
     speed = 1
     health = 100
 
-    def __init__(self, default_sprite, path_cells, move_anim=None):
+    def __init__(self, state_context, default_sprite, path_cells, move_anim=None):
         pygame.sprite.Sprite.__init__(self)
+        self.state_context = state_context
         self.default_sprite = default_sprite
         self.move_anim = move_anim
         self.path_cells = path_cells

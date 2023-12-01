@@ -7,8 +7,9 @@ class Projectile(Sprite):
     speed = 1
     damage = 1
 
-    def __init__(self, default_sprite, flying_animation, target, source_position):
+    def __init__(self, state_context, default_sprite, flying_animation, target, source_position):
         Sprite.__init__(self)
+        self.state_context = state_context
         self.flying_animation = flying_animation
         self.default_sprite = default_sprite
         self.rect = self.default_sprite.get_rect()
