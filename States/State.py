@@ -25,7 +25,7 @@ class StateName(Enum):
     MAIN_MENU = 0
     GAMEPLAY = 1
     ACTIVE_GAME = 10
-    BUILD_GAME = 11
+    PREPARE_GAME = 11
     PAUSE = 2
 
 

@@ -3,9 +3,9 @@ import pygame
 from States.State import State, StateName, StateFactory
 
 
-class BuildGameState(State):
+class PrepareGameState(State):
     def __init__(self, context_state_manager):
-        super().__init__(StateName.BUILD_GAME, context_state_manager, root_state=False)
+        super().__init__(StateName.PREPARE_GAME, context_state_manager, root_state=False)
 
     def tick(self):
         # Make tower sprite follow mouse
