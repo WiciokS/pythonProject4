@@ -16,9 +16,7 @@ class PrepareGameState(State):
                     self.switch_states(StateFactory.create_state(StateName.ACTIVE_GAME, self.state_context))
 
     def enter(self):
-        # TODO: Remove this
-        self.state_context.game_var.selected_tower = (
-            self.state_context.game_var.level.available_towers[0](self.state_context))
+        pass
 
     def exit(self):
         pass
