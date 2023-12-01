@@ -5,6 +5,8 @@ from Enemies.Orc import Orc
 from Level import LevelBuilder
 from States.State import StateFactory
 from Towers.Mage import Mage
+from Towers.ArcherTower import ArcherTower
+from Towers.ElementalTower import ElementalTower
 
 
 class GameVar:
@@ -20,6 +22,8 @@ class GameVar:
         level_builder.add_available_enemy(Goblin)
         level_builder.add_available_enemy(Orc)
         level_builder.add_available_tower(Mage)
+        #level_builder.add_available_tower(ArcherTower)
+        #level_builder.add_available_tower(ElementalTower)
         self.level = level_builder.build()
 
 
