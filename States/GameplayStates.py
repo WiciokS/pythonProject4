@@ -1,7 +1,7 @@
 import pygame
 
-from Area.MapArea import MapAreaInput
-from Area.MenuArea import MenuAreaInput
+from Area.MapAreaInput import MapAreaInput
+from Area.MenuAreaInput import MenuAreaInput
 from States.State import State, StateName, StateFactory
 
 

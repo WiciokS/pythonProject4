@@ -1,6 +1,5 @@
 import pygame
 
-from Area.MapArea import MapAreaInput
 from Enemies.Goblin import Goblin
 from Enemies.Orc import Orc
 from Level import LevelBuilder
@@ -13,6 +12,7 @@ class GameVar:
         self.state_context = state_context
         self.level = None
         self.selected_tower = None
+        self.double_select = False
         self.input_areas = []
 
         # TEMPORARY
