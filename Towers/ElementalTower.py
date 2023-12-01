@@ -8,6 +8,7 @@ from Towers.Base.Tower import Tower
 
 class ElementalTower:
     icon_path = 'Sprites/WaterElemental/WaterElementalDefault.png'
+
     def __init__(self, state_context, cell=None):
         self.state_context = state_context
         self.default_sprite = pygame.image.load("Sprites/WaterElemental/WaterElementalDefault.png").convert_alpha()

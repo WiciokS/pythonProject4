@@ -5,8 +5,10 @@ from Maps.Base.Cell import Cell
 from Projectiles.MageBulletProjectile import MageBulletProjectile
 from Towers.Base.Tower import Tower
 
+
 class ArcherTower:
     icon_path = 'Sprites/Archer/ArcherDefault.png'
+
     def __init__(self, state_context, cell=None):
         self.state_context = state_context
         self.default_sprite = pygame.image.load("Sprites/Archer/ArcherDefault.png").convert_alpha()
