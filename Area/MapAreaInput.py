@@ -7,7 +7,6 @@ class MapAreaInput(AreaInput):
 
     def __init__(self, state_context, top_left_x=0, top_left_y=0, width=0, height=0):
         super().__init__(state_context, AreaName.MAP, top_left_x, top_left_y, width, height)
-        pass
 
     def tick(self):
         mouse_pos = pygame.mouse.get_pos()
@@ -23,19 +22,27 @@ class MapAreaInput(AreaInput):
             # Place tower
             if self.state_context.game_var.selected_tower is not None:
                 cell = self.state_context.game_var.level.map.convert_screen_coordinates_to_cells(mouse_pos)[0]
-                if cell is not None and cell.tower is None:
+                if cell is not None:
                     # If the selected tower is the same as the clicked tower, pick it up
                     if cell.tower is not None:
                         if self.state_context.game_var.selected_tower is cell.tower:
                             cell.tower.pickup()
+                            self.state_context.game_var.level.deployed_towers.remove(
+                                self.state_context.game_var.selected_tower)
                             return
                     # if the cell tower is empty, place the tower
                     if cell.tower is None:
-                        self.state_context.game_var.level.deployed_towers.append(
-                            self.state_context.game_var.selected_tower)
-                        self.state_context.game_var.selected_tower.place(cell)
-                        self.state_context.game_var.selected_tower = None
-                        return
+                        if self.state_context.game_var.selected_tower.cell is None:
+                            if cell.buildable:
+                                self.state_context.game_var.selected_tower.place(cell)
+                                if cell.tower is self.state_context.game_var.selected_tower:
+                                    self.state_context.game_var.level.deployed_towers.append(
+                                        self.state_context.game_var.selected_tower)
+                                self.state_context.game_var.selected_tower = None
+                                return
+                        else:
+                            self.state_context.game_var.selected_tower = None
+                            return
 
             # Select tower
             if self.state_context.game_var.selected_tower is None:

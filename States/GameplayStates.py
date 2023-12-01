@@ -16,8 +16,9 @@ class PrepareGameState(State):
                     self.switch_states(StateFactory.create_state(StateName.ACTIVE_GAME, self.state_context))
 
     def enter(self):
+        # TODO: Remove this
         self.state_context.game_var.selected_tower = (
-            self.state_context.game_var.level.available_towers[0]())
+            self.state_context.game_var.level.available_towers[0](self.state_context))
 
     def exit(self):
         pass
@@ -29,6 +30,8 @@ class ActiveGameState(State):
 
     def tick(self):
         self.state_context.game_var.level.tick()
+        for tower in self.state_context.game_var.level.deployed_towers:
+            tower.tick()
 
     def enter(self):
         pass
@@ -51,9 +54,11 @@ class GameplayState(State):
         # If a tower is selected, draw its range and possible build cells
         if self.state_context.game_var.selected_tower is not None:
             # Draw cell outlines
-            for cell in self.state_context.game_var.level.map.cells:
-                cell.draw(self.state_context.app_var.screen)
-            self.state_context.game_var.selected_tower.draw_range(self.state_context.app_var.screen)
+            if self.state_context.game_var.selected_tower.cell is None:
+                for cell in self.state_context.game_var.level.map.cells:
+                    cell.draw(self.state_context.app_var.screen)
+            else:
+                self.state_context.game_var.selected_tower.cell.draw(self.state_context.app_var.screen)
 
         # Show time_ms in bottom left corner
         time_ms_text = (pygame.font.SysFont("Arial", 20)
@@ -62,6 +67,9 @@ class GameplayState(State):
         self.state_context.app_var.screen.blit(
             time_ms_text, (0, self.state_context.app_var.screen.get_height() - time_ms_text.get_height()))
 
+        if self.state_context.game_var.selected_tower is not None:
+            self.state_context.game_var.selected_tower.draw_range(self.state_context.app_var.screen)
+
         # Draw the towers and the enemies
         for tower in self.state_context.game_var.level.deployed_towers:
             tower.draw(self.state_context.app_var.screen)
@@ -69,11 +77,27 @@ class GameplayState(State):
         for enemy in self.state_context.game_var.level.deployed_enemies:
             # Orc the enemy if it's not at the end of the path
             if not enemy.at_end_of_path():
-                enemy.move()
+                if enemy.health <= 0:
+                    self.state_context.game_var.level.deployed_enemies.remove(enemy)
+                    for tower in self.state_context.game_var.level.deployed_towers:
+                        if tower.target is enemy:
+                            tower.target = None
+                            tower.possible_targets.remove(enemy)
+                    del enemy
+                    continue
+                enemy.tick()
                 enemy.draw(self.state_context.app_var.screen)
             else:
                 self.state_context.game_var.level.deployed_enemies.remove(enemy)
-                enemy.kill()
+                del enemy
+
+        for projectile in self.state_context.game_var.level.projectiles:
+            if projectile.on_target():
+                self.state_context.game_var.level.projectiles.remove(projectile)
+                del projectile
+            else:
+                projectile.tick()
+                projectile.draw(self.state_context.app_var.screen)
 
         for event in self.state_context.app_var.events:
             if event.type == pygame.KEYUP:
@@ -99,6 +123,9 @@ class GameplayState(State):
             self.state_context.persistent_states.append(self)
             self.switch_substate(StateFactory.create_state(StateName.PREPARE_GAME, self.state_context))
             self.state_context.persistent_states.append(self.substate)
+            self.state_context.app_var.screen = pygame.display.set_mode(
+                (self.state_context.game_var.level.map.width + 128,
+                 self.state_context.game_var.level.map.height))
             map_area = MapAreaInput(self.state_context,
                                     top_left_x=0,
                                     top_left_y=0,

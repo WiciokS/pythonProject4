@@ -1,8 +1,9 @@
 class Animation:
-    def __init__(self, frames, delay_tick, loop=True):
+    loop = True
+    delay_tick = 0
+
+    def __init__(self, frames):
         self.frames = frames
-        self.delay_tick = delay_tick
-        self.loop = loop
         self.current_frame = 0
         self.current_delay_tick = 0
         self.playing = False
@@ -19,7 +20,7 @@ class Animation:
                     if self.loop:
                         self.current_frame = 0
                     else:
-                        self.playing = False
+                        self.stop()
             self.current_delay_tick += 1
 
     def stop(self):

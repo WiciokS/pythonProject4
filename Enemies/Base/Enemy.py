@@ -7,8 +7,9 @@ class Enemy(pygame.sprite.Sprite):
     default_cooldown_ms = 3000
     default_available_amount = 99999
     speed = 1
+    health = 100
 
-    def __init__(self, default_sprite, move_anim, path_cells):
+    def __init__(self, default_sprite, path_cells, move_anim=None):
         pygame.sprite.Sprite.__init__(self)
         self.default_sprite = default_sprite
         self.move_anim = move_anim
@@ -16,6 +17,9 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.default_sprite.get_rect()
         self.path_index = 0
         self.screen_position = pygame.Vector2((path_cells[0].get_screen_x(), path_cells[0].get_screen_y()))
+
+    def tick(self):
+        self.move()
 
     def move(self):
         if self.move_anim is not None and not self.move_anim.playing:

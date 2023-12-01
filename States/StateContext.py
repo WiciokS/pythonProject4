@@ -12,10 +12,9 @@ class GameVar:
         self.state_context = state_context
         self.level = None
         self.selected_tower = None
-        self.double_select = False
         self.input_areas = []
 
-        # TEMPORARY
+        # TODO: Remove this
         level_builder = LevelBuilder(pygame.time.Clock())
         level_builder.add_map("TestMap")
         level_builder.add_available_enemy(Goblin)

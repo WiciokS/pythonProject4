@@ -1,8 +1,10 @@
+import pygame
+
 from Maps.TestMap import TestMap
 
 
 class LevelBuilder:
-    def __init__(self, clock):
+    def __init__(self, clock=pygame.time.Clock()):
         self.level = Level(clock)
 
     @staticmethod
@@ -49,6 +51,8 @@ class Level:
 
         self.available_towers = []  # Available towers
 
+        self.projectiles = []  # Projectiles
+
         # Enemies
         self.deployed_enemies = []  # How many times have each enemy been deployed
 
@@ -64,6 +68,8 @@ class Level:
 
     def tick(self):
         self.clock.tick()
+        if self.clock.get_time() > 200:
+            self.clock.tick()
         self.time_ms += self.clock.get_time()
         for i in range(len(self.available_enemies)):
             self.available_enemies_cooldown_interactive[i] -= self.clock.get_time()
