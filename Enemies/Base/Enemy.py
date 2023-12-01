@@ -4,17 +4,24 @@ from Maps.Base.Cell import Cell
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, path_cells, default_sprite):
+    default_cooldown_ms = 3000
+    default_available_amount = 99999
+    speed = 1
+
+    def __init__(self, default_sprite, move_anim, path_cells):
         pygame.sprite.Sprite.__init__(self)
         self.default_sprite = default_sprite
+        self.move_anim = move_anim
         self.path_cells = path_cells
         self.rect = self.default_sprite.get_rect()
         self.path_index = 0
         self.screen_position = pygame.Vector2((path_cells[0].get_screen_x(), path_cells[0].get_screen_y()))
-        self.speed = 1
 
     def move(self):
-        # Move the enemy smoothly along the path
+        if self.move_anim is not None and not self.move_anim.playing:
+            self.move_anim.play()
+
+        # Orc the enemy smoothly along the path
         target_screen_position = pygame.Vector2(
             (self.path_cells[self.path_index].get_screen_x(), self.path_cells[self.path_index].get_screen_y()))
 
@@ -26,16 +33,23 @@ class Enemy(pygame.sprite.Sprite):
             self.screen_position = target_screen_position
             self.path_index += 1
 
-        self.rect.center = (int(self.screen_position.x), int(self.screen_position.y))  # Update the rect for drawing
+        if self.move_anim is not None:
+            self.move_anim.tick()
+
+        self.rect.center = (int(self.screen_position.x), int(self.screen_position.y))
 
     def spawn(self):
-        self.rect = self.default_sprite.get_rect(
-            center=(self.path_cells[0].get_screen_x(), self.path_cells[0].get_screen_y()))
+        if self.default_sprite is not None:
+            self.rect = self.default_sprite.get_rect(
+                center=(self.path_cells[0].get_screen_x(), self.path_cells[0].get_screen_y()))
 
     def draw(self, screen):
-        screen.blit(self.default_sprite, self.rect)
+        if self.default_sprite is None:
+            return
+        if self.move_anim is not None and self.move_anim.playing:
+            screen.blit(self.move_anim.get_current_frame(), self.rect)
+        else:
+            screen.blit(self.default_sprite, self.rect)
 
     def at_end_of_path(self):
         return self.path_index > len(self.path_cells) - 1
-
-

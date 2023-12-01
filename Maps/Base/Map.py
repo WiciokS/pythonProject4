@@ -4,10 +4,12 @@ from Maps.Base.Cell import Cell
 
 
 class Map(pygame.sprite.Sprite):
-    def __init__(self, path_logical_map_coordinates, cells, map_sprite):
+    def __init__(self, path_logical_map_coordinates, cells, map_sprite, width, height):
         pygame.sprite.Sprite.__init__(self)
         self.map_sprite = map_sprite
         self.cells = cells
+        self.width = width
+        self.height = height
         self.path_cells = self.convert_logical_map_coordinates_to_cells(path_logical_map_coordinates)
         if len(self.path_cells) < 2:
             raise Exception("Path must have at least two points.")
@@ -25,10 +27,6 @@ class Map(pygame.sprite.Sprite):
     def draw(self, screen):
         # Clear screen
         screen.blit(self.map_sprite, (0, 0))
-
-        # Draw cell outlines
-        for cell in self.cells:
-            cell.draw(screen)
 
     def get_path(self):
         return self.path_cells

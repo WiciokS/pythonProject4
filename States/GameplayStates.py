@@ -1,5 +1,7 @@
 import pygame
 
+from Area.MapArea import MapAreaInput
+from Area.MenuArea import MenuAreaInput
 from States.State import State, StateName, StateFactory
 
 
@@ -8,23 +10,10 @@ class PrepareGameState(State):
         super().__init__(StateName.PREPARE_GAME, state_context, root_state=False)
 
     def tick(self):
-        # Make tower sprite follow mouse
-        mouse_pos = pygame.mouse.get_pos()
-        if self.state_context.game_var.selected_tower is not None:
-            self.state_context.game_var.selected_tower.rect.center = mouse_pos
-            self.state_context.game_var.selected_tower.draw(self.state_context.app_var.screen)
-
-        # On left click, place tower
         for event in self.state_context.app_var.events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    if self.state_context.game_var.selected_tower is not None:
-                        cell = self.state_context.game_var.level.map.convert_screen_coordinates_to_cells(mouse_pos)[0]
-                        if cell is not None and cell.tower is None:
-                            self.state_context.game_var.level.deployed_towers.append(
-                                self.state_context.game_var.selected_tower)
-                            self.state_context.game_var.selected_tower.place(cell)
-                            self.state_context.game_var.selected_tower = None
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_SPACE:
+                    self.switch_states(StateFactory.create_state(StateName.ACTIVE_GAME, self.state_context))
 
     def enter(self):
         self.state_context.game_var.selected_tower = (
@@ -53,14 +42,18 @@ class GameplayState(State):
         super().__init__(StateName.GAMEPLAY, state_context, root_state=True)
 
     def tick(self):
-        # On ESC, pause the game
-        for event in self.state_context.app_var.events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.switch_states(StateFactory.create_state(StateName.PAUSE, self.state_context))
+
+        mouse_pos = pygame.mouse.get_pos()
 
         # Draw map
         self.state_context.game_var.level.map.draw(self.state_context.app_var.screen)
+
+        # If a tower is selected, draw its range and possible build cells
+        if self.state_context.game_var.selected_tower is not None:
+            # Draw cell outlines
+            for cell in self.state_context.game_var.level.map.cells:
+                cell.draw(self.state_context.app_var.screen)
+            self.state_context.game_var.selected_tower.draw_range(self.state_context.app_var.screen)
 
         # Show time_ms in bottom left corner
         time_ms_text = (pygame.font.SysFont("Arial", 20)
@@ -74,13 +67,30 @@ class GameplayState(State):
             tower.draw(self.state_context.app_var.screen)
 
         for enemy in self.state_context.game_var.level.deployed_enemies:
-            # Move the enemy if it's not at the end of the path
+            # Orc the enemy if it's not at the end of the path
             if not enemy.at_end_of_path():
                 enemy.move()
                 enemy.draw(self.state_context.app_var.screen)
             else:
                 self.state_context.game_var.level.deployed_enemies.remove(enemy)
                 enemy.kill()
+
+        for event in self.state_context.app_var.events:
+            if event.type == pygame.KEYUP:
+                # On ESC, pause the game
+                if event.key == pygame.K_ESCAPE:
+                    self.switch_states(StateFactory.create_state(StateName.PAUSE, self.state_context))
+                    break
+            if event.type == pygame.MOUSEBUTTONUP:
+                for area in self.state_context.game_var.input_areas:
+                    if area.inside(mouse_pos):
+                        area.process_mouse_input_event(event)
+                        break
+
+        for area in self.state_context.game_var.input_areas:
+            if area.inside(mouse_pos):
+                area.tick()
+                area.draw(self.state_context.app_var.screen)
 
         super().tick()
 
@@ -89,6 +99,18 @@ class GameplayState(State):
             self.state_context.persistent_states.append(self)
             self.switch_substate(StateFactory.create_state(StateName.PREPARE_GAME, self.state_context))
             self.state_context.persistent_states.append(self.substate)
+            map_area = MapAreaInput(self.state_context,
+                                    top_left_x=0,
+                                    top_left_y=0,
+                                    width=self.state_context.game_var.level.map.width,
+                                    height=self.state_context.game_var.level.map.height)
+            self.state_context.game_var.input_areas.append(map_area)
+            buy_area = MenuAreaInput(self.state_context,
+                                     top_left_x=self.state_context.game_var.level.map.width,
+                                     top_left_y=0,
+                                     width=self.state_context.app_var.screen.get_width(),
+                                     height=self.state_context.app_var.screen.get_height())
+            self.state_context.game_var.input_areas.append(buy_area)
 
     def exit(self):
         pass

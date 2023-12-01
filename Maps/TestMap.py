@@ -14,6 +14,9 @@ class TestMap(Map):
             for x in range(30):
                 cells.append(Cell(x, y, True))
 
+        width = 30 * Cell.screen_size
+        height = 20 * Cell.screen_size
+
         # Create path for enemies
         enemy_path_logical_map_coordinates = [(26, 0), (26, 9), (15, 9), (15, 2), (2, 2), (2, 16), (25, 16), (25, 19)]
-        super().__init__(enemy_path_logical_map_coordinates, cells, self.map_sprite)
+        super().__init__(enemy_path_logical_map_coordinates, cells, self.map_sprite, width, height)
