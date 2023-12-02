@@ -10,6 +10,7 @@ class Mage(Tower):
     range = 2
     action_cooldown_ms = 1000
     icon_path = 'Sprites/Mage/MageDefault.png'
+    cost = 100
 
     def __init__(self, state_context, cell=None):
         self.state_context = state_context

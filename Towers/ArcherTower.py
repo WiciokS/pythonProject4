@@ -8,6 +8,7 @@ from Towers.Base.Tower import Tower
 
 class ArcherTower:
     icon_path = 'Sprites/Archer/ArcherDefault.png'
+    cost = 100
 
     def __init__(self, state_context, cell=None):
         self.state_context = state_context

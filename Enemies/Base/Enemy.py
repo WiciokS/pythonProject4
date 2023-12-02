@@ -11,6 +11,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def __init__(self, state_context, default_sprite, path_cells, move_anim=None):
         pygame.sprite.Sprite.__init__(self)
+        self.default_health = self.health
         self.state_context = state_context
         self.default_sprite = default_sprite
         self.move_anim = move_anim
@@ -61,6 +62,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def death(self):
         self.remove()
+        self.state_context.game_var.level.gold += self.default_health // 5
 
     def remove(self):
         self.state_context.game_var.level.deployed_enemies.remove(self)

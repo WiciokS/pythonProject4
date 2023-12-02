@@ -19,11 +19,12 @@ class GameVar:
         # TODO: Remove this
         level_builder = LevelBuilder(self.state_context)
         level_builder.add_map("TestMap")
+        level_builder.set_starting_gold(1000)
         level_builder.add_available_enemy(Goblin)
         level_builder.add_available_enemy(Orc)
         level_builder.add_available_tower(Mage)
-        #level_builder.add_available_tower(ArcherTower)
-        #level_builder.add_available_tower(ElementalTower)
+        level_builder.add_available_tower(ArcherTower)
+        level_builder.add_available_tower(ElementalTower)
         self.level = level_builder.build()
 
 

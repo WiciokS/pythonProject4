@@ -8,6 +8,8 @@ from Maps.Base.Cell import Cell
 class Tower(pygame.sprite.Sprite):
     action_cooldown_ms = 1000
     range = 1
+    cost = 100
+    icon_path = None
 
     def __init__(self, state_context, cell, default_sprite, action_anim=None, ):
         self.state_context = state_context
@@ -51,6 +53,7 @@ class Tower(pygame.sprite.Sprite):
         else:
             self.rect.center = (cell.get_screen_x(), cell.get_screen_y())
             self.attach(cell)
+            self.state_context.game_var.level.gold -= self.cost
 
     def pickup(self):
         self.last_cell = self.cell

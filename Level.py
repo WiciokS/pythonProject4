@@ -34,6 +34,9 @@ class LevelBuilder:
     def add_available_tower(self, available_tower):
         self.level.available_towers.append(available_tower)
 
+    def set_starting_gold(self, starting_gold):
+        self.level.gold = starting_gold
+
     def build(self):
         for i in range(len(self.level.available_enemies)):
             self.level.available_enemies_deployed_times.append(0)
@@ -45,6 +48,7 @@ class Level:
         self.state_context = state_context
         self.time_ms = 0
         self.map = None
+        self.gold = 0
 
         # Towers
         self.deployed_towers = []  # Deployed towers
