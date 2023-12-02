@@ -1,6 +1,7 @@
 import pygame
 
 from Area.AreaInput import AreaInput, AreaName
+from States.State import StateName
 
 
 class MapAreaInput(AreaInput):
@@ -19,8 +20,10 @@ class MapAreaInput(AreaInput):
     def process_mouse_input_event(self, event):
         mouse_pos = pygame.mouse.get_pos()
         if event.button == 1:  # Left click
-            # Place tower
-            if self.state_context.game_var.selected_tower is not None:
+            # Place tower (PREPARE_GAME)
+            if (self.state_context.game_var.selected_tower is not None
+                    and (self.state_context.current_state_root.substate is not None
+                         and self.state_context.current_state_root.substate.state_name == StateName.PREPARE_GAME)):
                 cell = self.state_context.game_var.level.map.convert_screen_coordinates_to_cells(mouse_pos)[0]
                 if cell is not None:
                     # If the selected tower is the same as the clicked tower, pick it up
