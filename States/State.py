@@ -17,6 +17,9 @@ class StateFactory:
         elif state_name == StateName.PREPARE_GAME:
             from States.GameplayStates import PrepareGameState
             return PrepareGameState(state_context)
+        elif state_name == StateName.MAIN_MENU:
+            from States.MenuStates import MainMenuState
+            return MainMenuState(state_context)
         else:
             raise ValueError("Invalid state name")
 

@@ -1,6 +1,6 @@
 import pygame
 
-from States.State import State, StateName
+from States.State import State, StateName, StateFactory
 
 
 class PausedState(State):
@@ -22,6 +22,25 @@ class PausedState(State):
                             self.switch_states(state)
                             break
                     Exception("No gameplay state found to unpause to.")
+
+    def enter(self):
+        pass
+
+    def exit(self):
+        pass
+
+
+class MainMenuState(State):
+
+    def __init__(self, state_context):
+        super().__init__(StateName.MAIN_MENU, state_context, root_state=True)
+
+    def tick(self):
+        for event in self.state_context.app_var.events:
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    self.switch_states(StateFactory.create_state(StateName.GAMEPLAY, self.state_context))
+                    break
 
     def enter(self):
         pass
