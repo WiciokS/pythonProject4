@@ -4,8 +4,12 @@ from Area.AreaInput import AreaInput, AreaName
 
 class MenuAreaInput(AreaInput):
     font = 18  # Font size for the gold cost text
-    def tick(self):
-        pass
+    def tick_anim(self):
+        # Update the coin animation
+        self.coin_frame_counter += 1
+        if self.coin_frame_counter >= self.coin_animation_rate:
+            self.coin_frame_counter = 0
+            self.current_coin_frame = (self.current_coin_frame + 1) % len(self.coin_sprites)
 
     def __init__(self, state_context, top_left_x=0, top_left_y=0, width=0, height=0):
         super().__init__(state_context, AreaName.MENU, top_left_x, top_left_y, width, height)
@@ -14,6 +18,14 @@ class MenuAreaInput(AreaInput):
         self.gold_cost_texts = []
         self.icon_collision_rects = []
         y_offset = 64  # Starting y position for the first icon
+
+        # Load the coin sprites for the animation
+        self.coin_sprites = [
+            pygame.image.load(f'Sprites/Coin/Coin{i}.png') for i in range(1, 6)
+        ]
+        self.current_coin_frame = 0
+        self.coin_animation_rate = 5  # Adjust as needed for animation speed
+        self.coin_frame_counter = 0
 
         # Load the background sprite - replace 'path/to/background_sprite.png' with your actual file path
         self.background_sprite = pygame.image.load('Sprites/Background/Background.png')
@@ -61,7 +73,14 @@ class MenuAreaInput(AreaInput):
         gold_amount_text = pygame.font.SysFont("Arial", self.font).render(
             str(self.state_context.game_var.level.gold), True, (0, 0, 0)
         )
-        screen.blit(gold_amount_text, (self.top_left_x + 16, self.top_left_y + 16))
+        screen.blit(gold_amount_text, (self.top_left_x + 32, self.top_left_y + 14))
+
+        # Draw the animated coin sprite near the total gold amount
+        coin_sprite = self.coin_sprites[self.current_coin_frame]
+        # Position the coin sprite to the left of the gold amount text
+        coin_x = self.top_left_x + 8
+        coin_y = self.top_left_y + 16
+        screen.blit(coin_sprite, (coin_x, coin_y))
 
         # Draw tower backgrounds, icons, and gold cost texts
         for icon_sprite, (rect, index) in zip(self.tower_icons, self.icon_collision_rects):

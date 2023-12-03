@@ -55,3 +55,7 @@ class AreaInput:
     @abstractmethod
     def draw(self, screen):
         pass
+
+    @abstractmethod
+    def tick_anim(self):
+        pass

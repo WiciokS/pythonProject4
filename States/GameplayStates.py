@@ -147,6 +147,7 @@ class GameplayState(State):
         for area in self.state_context.game_var.input_areas:
             if area.inside(mouse_pos):
                 area.tick()
+            area.tick_anim()
             area.draw(self.state_context.app_var.screen)
 
         if self.state_context.game_var.level.current_wave_index >= len(self.state_context.game_var.level.waves):
