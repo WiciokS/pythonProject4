@@ -27,9 +27,11 @@ class MapAreaInput(AreaInput):
                     # If the selected tower is the same as the clicked tower
                     if cell.tower is not None:
                         if self.state_context.game_var.selected_tower is cell.tower:
-                            cell.tower.pickup()
-                            self.state_context.game_var.level.deployed_towers.remove(
-                                self.state_context.game_var.selected_tower)
+                            # Pickup the tower if substate is PREPARE_GAME
+                            if self.state_context.current_state_root.substate.state_name is StateName.PREPARE_GAME:
+                                cell.tower.pickup()
+                                self.state_context.game_var.level.deployed_towers.remove(
+                                    self.state_context.game_var.selected_tower)
                             return
                     # if the cell tower is empty, place the tower
                     if cell.tower is None:
