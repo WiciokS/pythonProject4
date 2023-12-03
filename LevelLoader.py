@@ -66,5 +66,8 @@ class LevelLoader:
         elif name == "Mage":
             from Towers.Mage import Mage
             return Mage
+        elif name == "WaterElemental":
+            from Towers.WaterElemental import WaterElemental
+            return WaterElemental
         else:
             raise ValueError("Invalid tower name")

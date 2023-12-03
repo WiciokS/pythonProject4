@@ -3,7 +3,8 @@
   "starting_gold": 500,
   "available_towers": [
     { "name": "Mage" },
-    { "name": "Archer" }
+    { "name": "Archer" },
+    { "name": "WaterElemental" }
   ],
   "waves": [
     {

@@ -2,22 +2,27 @@ from abc import abstractmethod
 
 from pygame.sprite import Sprite
 
+from Point import Point
+
 
 class Projectile(Sprite):
     speed = 1
     damage = 1
 
-    def __init__(self, state_context, default_sprite, flying_animation, target, source_position):
+    def __init__(self, state_context, default_sprite, flying_animation, target, source_position, homing=True):
         Sprite.__init__(self)
         self.state_context = state_context
         self.flying_animation = flying_animation
         self.default_sprite = default_sprite
+        self.homing = homing
         self.rect = self.default_sprite.get_rect()
         self.target = target
         self.screen_position = source_position
         self.rect.center = (int(self.screen_position.x), int(self.screen_position.y))
         if self.flying_animation is not None:
             self.flying_animation.play()
+        if not self.homing:
+            self.target = Point(self.target.screen_position.x, self.target.screen_position.y)
 
     def tick(self):
         self.flying_animation.tick()
