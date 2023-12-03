@@ -171,6 +171,7 @@ class GameplayState(State):
             self.state_context.app_var.screen = pygame.display.set_mode(
                 (self.state_context.game_var.level.map.width + 128,
                  self.state_context.game_var.level.map.height))
+        if len(self.state_context.game_var.input_areas) == 0:
             map_area = MapAreaInput(self.state_context,
                                     top_left_x=0,
                                     top_left_y=0,
@@ -185,4 +186,4 @@ class GameplayState(State):
             self.state_context.game_var.input_areas.append(buy_area)
 
     def exit(self):
-        pass
+        self.state_context.game_var.input_areas.clear()
