@@ -65,7 +65,9 @@ class Enemy(pygame.sprite.Sprite):
         self.state_context.game_var.level.gold += self.default_health // 5
 
     def remove(self):
-        self.state_context.game_var.level.deployed_enemies.remove(self)
+        if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
+            self.state_context.game_var.level.waves[
+                self.state_context.game_var.level.current_wave_index].deployed_wave_enemies.remove(self)
         for tower in self.state_context.game_var.level.deployed_towers:
             if tower.target == self:
                 tower.target = None

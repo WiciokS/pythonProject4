@@ -7,6 +7,7 @@ from States.State import StateFactory
 from Towers.Mage import Mage
 from Towers.ArcherTower import ArcherTower
 from Towers.ElementalTower import ElementalTower
+from Wave import WaveBuilder
 
 
 class GameVar:
@@ -17,11 +18,22 @@ class GameVar:
         self.input_areas = []
 
         # TODO: Remove this
+
+        wave_builder = WaveBuilder(self.state_context)
+        wave_builder.add_wave_enemy(Goblin, 1)
+        wave_builder.add_wave_enemy(Orc, 1, first_appearance_ms=5000)
+        wave1 = wave_builder.build()
+
+        wave_builder = WaveBuilder(self.state_context)
+        wave_builder.add_wave_enemy(Goblin, 2)
+        wave_builder.add_wave_enemy(Orc, 2, first_appearance_ms=5000)
+        wave2 = wave_builder.build()
+
         level_builder = LevelBuilder(self.state_context)
         level_builder.add_map("TestMap")
         level_builder.set_starting_gold(1000)
-        level_builder.add_available_enemy(Goblin)
-        level_builder.add_available_enemy(Orc)
+        level_builder.add_wave(wave1)
+        level_builder.add_wave(wave2)
         level_builder.add_available_tower(Mage)
         level_builder.add_available_tower(ArcherTower)
         level_builder.add_available_tower(ElementalTower)

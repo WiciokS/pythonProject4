@@ -13,7 +13,10 @@ class PrepareGameState(State):
         for event in self.state_context.app_var.events:
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
-                    self.switch_states(StateFactory.create_state(StateName.ACTIVE_GAME, self.state_context))
+                    if self.state_context.game_var.level.current_wave_index < len(
+                            self.state_context.game_var.level.waves):
+                        self.switch_states(StateFactory.create_state(StateName.ACTIVE_GAME, self.state_context))
+                        break
 
     def enter(self):
         pass
@@ -27,9 +30,16 @@ class ActiveGameState(State):
         super().__init__(StateName.ACTIVE_GAME, state_context, root_state=False)
 
     def tick(self):
-        self.state_context.game_var.level.tick()
         for tower in self.state_context.game_var.level.deployed_towers:
             tower.tick()
+        self.state_context.game_var.level.tick()
+        if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
+            if (self.state_context.game_var.level.waves[self.state_context.game_var.level.current_wave_index]
+                    .wave_completed()):
+                self.state_context.game_var.level.next_wave()
+                if self.state_context.game_var.level.current_wave_index < len(
+                        self.state_context.game_var.level.waves):
+                    self.switch_states(StateFactory.create_state(StateName.PREPARE_GAME, self.state_context))
 
     def enter(self):
         pass
@@ -58,13 +68,41 @@ class GameplayState(State):
             else:
                 self.state_context.game_var.selected_tower.cell.draw(self.state_context.app_var.screen)
 
-        # Show time_ms in bottom left corner
-        time_ms_text = (pygame.font.SysFont("Arial", 20)
-                        .render(str(self.state_context.game_var.level.time_ms), True, (0, 0, 0)))
+        # Show time
+        if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
+            time = self.state_context.game_var.level.waves[self.state_context.game_var.level.current_wave_index].time_ms
+            time_ms_text = (pygame.font.SysFont("Arial", 20)
+                            .render(str(time), True, (0, 0, 0)))
+            self.state_context.app_var.screen.blit(
+                time_ms_text, (0, self.state_context.app_var.screen.get_height() - time_ms_text.get_height()))
 
-        self.state_context.app_var.screen.blit(
-            time_ms_text, (0, self.state_context.app_var.screen.get_height() - time_ms_text.get_height()))
+        # Show wave number
+        if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
+            wave_number = self.state_context.game_var.level.current_wave_index + 1
+            wave_number_text = (pygame.font.SysFont("Arial", 50)
+                                .render(str(wave_number), True, (0, 0, 0)))
+            self.state_context.app_var.screen.blit(wave_number_text, (0, self.state_context.app_var.screen.get_height()
+                                                                      - 100))
 
+        # Show enemies and how many left
+        if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
+            for enemy in self.state_context.game_var.level.waves[
+                    self.state_context.game_var.level.current_wave_index].available_wave_enemies:
+                enemy_name = enemy.__name__
+                enemy_available_amount = self.state_context.game_var.level.waves[
+                    self.state_context.game_var.level.current_wave_index].available_wave_enemies_available_amount[
+                    self.state_context.game_var.level.waves[
+                        self.state_context.game_var.level.current_wave_index].available_wave_enemies.index(enemy)]
+                enemy_available_amount_text = (pygame.font.SysFont("Arial", 20)
+                                               .render(enemy_name + ": " + str(enemy_available_amount), True,
+                                                       (0, 0, 0)))
+                self.state_context.app_var.screen.blit(enemy_available_amount_text,
+                                                       (0, enemy_available_amount_text.get_height() *
+                                                        self.state_context.game_var.level.waves[
+                                                            self.state_context.game_var.level.current_wave_index]
+                                                        .available_wave_enemies.index(enemy)))
+
+        # Show range if tower is selected
         if self.state_context.game_var.selected_tower is not None:
             self.state_context.game_var.selected_tower.draw_range(self.state_context.app_var.screen)
 
@@ -72,15 +110,17 @@ class GameplayState(State):
         for tower in self.state_context.game_var.level.deployed_towers:
             tower.draw(self.state_context.app_var.screen)
 
-        for enemy in self.state_context.game_var.level.deployed_enemies:
-            # Orc the enemy if it's not at the end of the path
-            if not enemy.at_end_of_path():
-                enemy.tick()
-                if enemy is None:
-                    continue
-                enemy.draw(self.state_context.app_var.screen)
-            else:
-                enemy.remove()
+        # Draw the enemies and process their logic
+        if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
+            for enemy in self.state_context.game_var.level.waves[
+                    self.state_context.game_var.level.current_wave_index].deployed_wave_enemies:
+                if not enemy.at_end_of_path():
+                    enemy.tick()
+                    if enemy is None:  # If the enemy is removed after tick
+                        continue
+                    enemy.draw(self.state_context.app_var.screen)
+                else:
+                    enemy.remove()
 
         for projectile in self.state_context.game_var.level.projectiles:
             projectile.tick()
@@ -104,6 +144,17 @@ class GameplayState(State):
             if area.inside(mouse_pos):
                 area.tick()
             area.draw(self.state_context.app_var.screen)
+
+        if self.state_context.game_var.level.current_wave_index >= len(self.state_context.game_var.level.waves):
+            if self.state_context.game_var.level.waves[
+                    self.state_context.game_var.level.current_wave_index - 1].wave_completed():
+                # Draw a text in the middle saying you won
+                win_text = (pygame.font.SysFont("Arial", 50)
+                            .render("You defeated the horde!", True,
+                                    (0, 0, 0)))
+                self.state_context.app_var.screen.blit(win_text,
+                                                       (self.state_context.app_var.screen.get_width() // 2,
+                                                        self.state_context.app_var.screen.get_height() // 2))
 
         super().tick()
 
