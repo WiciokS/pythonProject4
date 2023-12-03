@@ -35,7 +35,7 @@ class Mage(Tower):
             if self.target is not None:
                 if self.target not in self.possible_targets:
                     self.target = None
-                if self.target.health <= 0:
+                elif self.target.health <= 0:
                     self.target = None
 
             # If there is no target, pick one
