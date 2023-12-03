@@ -3,16 +3,21 @@ from Area.AreaInput import AreaInput, AreaName
 
 
 class MenuAreaInput(AreaInput):
-
+    font = 18  # Font size for the gold cost text
     def tick(self):
         pass
 
     def __init__(self, state_context, top_left_x=0, top_left_y=0, width=0, height=0):
         super().__init__(state_context, AreaName.MENU, top_left_x, top_left_y, width, height)
         self.tower_icons = []
+        self.tower_backgrounds = []  # List to hold the background sprites
         self.gold_cost_texts = []
         self.icon_collision_rects = []
         y_offset = 64  # Starting y position for the first icon
+
+        # Load the background sprite - replace 'path/to/background_sprite.png' with your actual file path
+        self.background_sprite = pygame.image.load('Sprites/Background/Background.png')
+
 
         for index, tower_class in enumerate(state_context.game_var.level.available_towers):
             # Dynamically load the icon based on the tower's class attribute
@@ -26,7 +31,7 @@ class MenuAreaInput(AreaInput):
             self.icon_collision_rects.append((rect, index))  # Append a tuple with the rect and index
 
             # Put text of gold cost below the icon
-            gold_cost_text = pygame.font.SysFont("Arial", 20).render(
+            gold_cost_text = pygame.font.SysFont("Arial", self.font).render(
                 str(tower_class.cost), True, (0, 0, 0))
             self.gold_cost_texts.append(gold_cost_text)
 
@@ -49,15 +54,33 @@ class MenuAreaInput(AreaInput):
                 break  # Exit the loop once a collision is found
 
     def draw(self, screen):
-        # Draw background
+        # Draw background for the menu area
         screen.fill((128, 128, 128), (self.top_left_x, self.top_left_y, self.bottom_right_x, self.bottom_right_y))
 
-        screen.blit(pygame.font.SysFont("Arial", 20).
-                    render(str(self.state_context.game_var.level.gold), True, (0, 0, 0)),
-                    (self.top_left_x + 16, self.top_left_y + 16))
+        # Draw the current gold amount
+        gold_amount_text = pygame.font.SysFont("Arial", self.font).render(
+            str(self.state_context.game_var.level.gold), True, (0, 0, 0)
+        )
+        screen.blit(gold_amount_text, (self.top_left_x + 16, self.top_left_y + 16))
 
-        # Draw tower icons
-        for icon_sprite, (rect, _) in zip(self.tower_icons, self.icon_collision_rects):  # Corrected unpacking
-            screen.blit(icon_sprite, rect.topleft)  # 'rect' must be a pygame.Rect object
-            screen.blit(self.gold_cost_texts[self.icon_collision_rects.index((rect, _))],
-                        (rect.centerx, rect.bottom + 8))
+        # Draw tower backgrounds, icons, and gold cost texts
+        for icon_sprite, (rect, index) in zip(self.tower_icons, self.icon_collision_rects):
+            # Calculate the top left position of the background sprite to be centered and 4 pixels above the icon
+            background_x = rect.centerx - self.background_sprite.get_width() // 2
+            background_y = rect.top - 4
+
+            # Draw the background sprite
+            screen.blit(self.background_sprite, (background_x, background_y))
+
+            # Now draw the icon sprite
+            screen.blit(icon_sprite, rect.topleft)
+
+            # Calculate the x position for the gold cost text to be centered below the icon
+            text_image = self.gold_cost_texts[index]
+            text_x = rect.centerx - text_image.get_width() // 2
+            text_y = rect.bottom + 8  # 8 pixels below the icon
+
+            # Draw the gold cost text
+            screen.blit(text_image, (text_x, text_y))
+
+
