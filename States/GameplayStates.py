@@ -134,7 +134,6 @@ class GameplayState(State):
         # Process inputs
         for event in self.state_context.app_var.events:
             if event.type == pygame.KEYUP:
-                # On ESC, pause the game
                 if event.key == pygame.K_ESCAPE:
                     self.switch_states(StateFactory.create_state(StateName.PAUSE, self.state_context))
                     break
