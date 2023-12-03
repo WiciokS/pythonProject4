@@ -10,6 +10,8 @@ class PrepareGameState(State):
         super().__init__(StateName.PREPARE_GAME, state_context, root_state=False)
 
     def tick(self):
+        for tower in self.state_context.game_var.level.deployed_towers:
+            tower.tick_anim()
         for event in self.state_context.app_var.events:
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:

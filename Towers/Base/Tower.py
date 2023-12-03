@@ -78,12 +78,15 @@ class Tower(pygame.sprite.Sprite):
         self.screen_position = pygame.Vector2((self.rect.centerx, self.rect.centery))
         if self.cell is None:
             return
-        if self.action_anim is not None and self.action_anim.playing:
-            self.action_anim.tick()
+        self.tick_anim()
         if self.action_condition():
             if self.action_cooldown_ms_interactive <= 0:
                 self.action()
                 self.action_cooldown_ms_interactive = self.action_cooldown_ms
+
+    def tick_anim(self):
+        if self.action_anim is not None and self.action_anim.playing:
+            self.action_anim.tick()
 
     def is_in_range(self, target):
         return (pygame.math.Vector2(self.cell.get_screen_x(), self.cell.get_screen_y()).
