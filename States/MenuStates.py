@@ -1,4 +1,5 @@
 import pygame
+import os
 
 from States.State import State, StateName, StateFactory
 
@@ -33,6 +34,7 @@ class PausedState(State):
 class MainMenuState(State):
 
     def __init__(self, state_context):
+        self.levels = []
         super().__init__(StateName.MAIN_MENU, state_context, root_state=True)
 
     def tick(self):
@@ -43,7 +45,12 @@ class MainMenuState(State):
                     break
 
     def enter(self):
-        pass
+        for file in os.listdir("Levels"):
+            if file.endswith(".json"):
+                self.levels.append(file)
+
+
+
 
     def exit(self):
         pass
