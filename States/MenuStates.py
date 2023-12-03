@@ -34,7 +34,7 @@ class PausedState(State):
 class MainMenuState(State):
 
     def __init__(self, state_context):
-        self.levels = []
+        self.level_files = []
         super().__init__(StateName.MAIN_MENU, state_context, root_state=True)
 
     def tick(self):
@@ -47,7 +47,7 @@ class MainMenuState(State):
     def enter(self):
         for file in os.listdir("Levels"):
             if file.endswith(".json"):
-                self.levels.append(file)
+                self.level_files.append(file)
 
 
 
