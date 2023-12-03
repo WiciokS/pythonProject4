@@ -15,6 +15,7 @@ class MageBulletProjectile(Projectile):
         super().__init__(state_context, default_sprite, flying_animation, target, source_position)
 
     def hit(self):
-        self.target.health -= self.damage
+        if self.target is not None:
+            self.target.health -= self.damage
         self.remove()
 
