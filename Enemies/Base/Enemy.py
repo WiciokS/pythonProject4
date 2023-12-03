@@ -69,8 +69,9 @@ class Enemy(pygame.sprite.Sprite):
             self.state_context.game_var.level.waves[
                 self.state_context.game_var.level.current_wave_index].deployed_wave_enemies.remove(self)
         for tower in self.state_context.game_var.level.deployed_towers:
-            if tower.target == self:
+            if self in tower.possible_targets:
                 tower.possible_targets.remove(self)
+            if tower.target is self:
                 tower.target = None
         del self
 

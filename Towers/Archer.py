@@ -33,19 +33,9 @@ class Archer(Tower):
                 if self.is_in_range(enemy):
                     if enemy not in self.possible_targets:
                         self.possible_targets.append(enemy)
-                        continue
                 else:
                     if enemy in self.possible_targets:
                         self.possible_targets.remove(enemy)
-                if enemy.health <= 0:
-                    enemy.remove()
-
-            # If target not in possible targets, remove it
-            if self.target is not None:
-                if self.target not in self.possible_targets:
-                    self.target = None
-                elif self.target.health <= 0:
-                    self.target = None
 
             # If there is no target, pick one
             if self.target is None:
