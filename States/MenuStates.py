@@ -69,9 +69,6 @@ class MainMenuState(State):
         # Set background image
         self.set_background_image("Sprites/Background/Fon.png")
 
-        # draw the button
-        self.draw_button(self.button_start.image, self.button_start.rect)
-        self.draw_button(self.button_quit.image, self.button_quit.rect)
         # check if the button is pressed on collision
         for event in self.state_context.app_var.events:
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -90,6 +87,10 @@ class MainMenuState(State):
                     # Close program
                     self.state_context.app_var.app_running = False
                     break
+
+        # draw the button
+        self.draw_button(self.button_start.image, self.button_start.rect)
+        self.draw_button(self.button_quit.image, self.button_quit.rect)
 
         self.button_start.update()
         self.button_quit.update()
