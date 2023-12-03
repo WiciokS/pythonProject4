@@ -12,7 +12,10 @@ class TestMap(Map):
         cells = []
         for y in range(20):
             for x in range(30):
-                cells.append(Cell(x, y, True))
+                buildable = True
+                if 6 <= x <= 11 and 6 <= y <= 11:
+                    buildable = False
+                cells.append(Cell(x, y, buildable))
 
         width = 30 * Cell.screen_size
         height = 20 * Cell.screen_size
