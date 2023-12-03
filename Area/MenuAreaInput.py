@@ -1,5 +1,7 @@
 import pygame
 from Area.AreaInput import AreaInput, AreaName
+from States.State import StateFactory, StateName
+from UI.AnimatedButton import AnimatedButton
 
 
 class MenuAreaInput(AreaInput):
@@ -11,13 +13,34 @@ class MenuAreaInput(AreaInput):
             self.coin_frame_counter = 0
             self.current_coin_frame = (self.current_coin_frame + 1) % len(self.coin_sprites)
 
+        self.enter_button.update()
+
+    def tick(self):
+        pass
+
+
     def __init__(self, state_context, top_left_x=0, top_left_y=0, width=0, height=0):
         super().__init__(state_context, AreaName.MENU, top_left_x, top_left_y, width, height)
         self.tower_icons = []
         self.tower_backgrounds = []  # List to hold the background sprites
         self.gold_cost_texts = []
         self.icon_collision_rects = []
+
         y_offset = 64  # Starting y position for the first icon
+
+        # Create an instance of the AnimatedButton
+        self.enter_button = AnimatedButton(
+            'Sprites/Buttons/EnterButton/Enter Button1.png',
+            'Sprites/Buttons/EnterButton/Enter Button2.png'
+        )
+
+        # Create enter button collision rect
+        self.enter_button_collision_rect = pygame.Rect(self.bottom_right_x - self.enter_button.image.get_width() - 8,
+                                                       self.bottom_right_y - self.enter_button.image.get_height() - 8,
+                                                       self.enter_button.image.get_width(),
+                                                       self.enter_button.image.get_height())
+        # Position the button in the bottom corner
+        self.enter_button.rect.bottomright = (self.bottom_right_x - 8, self.bottom_right_y - 8)
 
         # Load the coin sprites for the animation
         self.coin_sprites = [
@@ -50,14 +73,28 @@ class MenuAreaInput(AreaInput):
             # Increment y_offset for the next icon
             y_offset += icon_sprite.get_height() + 64
 
+    def switch_to_game_state(self):
+        # The action that will be executed when the button is clicked
+        if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
+            self.state_context.current_state_root.switch_substate(
+                StateFactory.create_state(StateName.ACTIVE_GAME, self.state_context)
+            )
+
     def process_mouse_input_event(self, event):
         # Get mouse position
         mouse_pos = pygame.mouse.get_pos()
 
-        # Check each icon for a collision with the mouse click
+        # Check if the mouse click is within the enter button collision rect
+        if self.enter_button_collision_rect.collidepoint(mouse_pos):
+            # Press the button
+            self.enter_button.press()
+            # Switch to the game state
+            self.switch_to_game_state()
+
+
+            # Check each icon for a collision with the mouse click
         for rect, tower_index in self.icon_collision_rects:  # Corrected iteration
             if rect.collidepoint(mouse_pos):
-                print(f"Icon {tower_index} clicked")  # Debugging output
                 # Create the selected tower based on the clicked icon
                 if (self.state_context.game_var.level.gold >=
                         self.state_context.game_var.level.available_towers[tower_index].cost):
@@ -82,6 +119,9 @@ class MenuAreaInput(AreaInput):
         coin_y = self.top_left_y + 16
         screen.blit(coin_sprite, (coin_x, coin_y))
 
+        # Draw the enter button
+        screen.blit(self.enter_button.image, self.enter_button.rect)
+
         # Draw tower backgrounds, icons, and gold cost texts
         for icon_sprite, (rect, index) in zip(self.tower_icons, self.icon_collision_rects):
             # Calculate the top left position of the background sprite to be centered and 4 pixels above the icon
@@ -101,5 +141,7 @@ class MenuAreaInput(AreaInput):
 
             # Draw the gold cost text
             screen.blit(text_image, (text_x, text_y))
+
+
 
 
