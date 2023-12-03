@@ -21,12 +21,10 @@ class MapAreaInput(AreaInput):
         mouse_pos = pygame.mouse.get_pos()
         if event.button == 1:  # Left click
             # Place tower (PREPARE_GAME)
-            if (self.state_context.game_var.selected_tower is not None
-                    and (self.state_context.current_state_root.substate is not None
-                         and self.state_context.current_state_root.substate.state_name == StateName.PREPARE_GAME)):
+            if self.state_context.game_var.selected_tower is not None:  # If a tower is selected
                 cell = self.state_context.game_var.level.map.convert_screen_coordinates_to_cells(mouse_pos)[0]
                 if cell is not None:
-                    # If the selected tower is the same as the clicked tower, pick it up
+                    # If the selected tower is the same as the clicked tower
                     if cell.tower is not None:
                         if self.state_context.game_var.selected_tower is cell.tower:
                             cell.tower.pickup()

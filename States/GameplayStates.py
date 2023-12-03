@@ -63,11 +63,11 @@ class GameplayState(State):
 
         # If a tower is selected, draw its range and possible build cells
         if self.state_context.game_var.selected_tower is not None:
-            # Draw cell outlines
-            if self.state_context.game_var.selected_tower.cell is None:
+            if self.state_context.game_var.selected_tower.cell is None:  # If it's not placed, draw all cells
                 for cell in self.state_context.game_var.level.map.cells:
                     cell.draw(self.state_context.app_var.screen)
             else:
+                # If it's placed, draw the selected tower cell
                 self.state_context.game_var.selected_tower.cell.draw(self.state_context.app_var.screen)
 
         # Show time
@@ -124,12 +124,14 @@ class GameplayState(State):
                 else:
                     enemy.remove()
 
+        # Draw the projectiles and process their logic
         for projectile in self.state_context.game_var.level.projectiles:
             projectile.tick()
-            if projectile is None:
+            if projectile is None:  # If the projectile is removed after tick
                 continue
             projectile.draw(self.state_context.app_var.screen)
 
+        # Process inputs
         for event in self.state_context.app_var.events:
             if event.type == pygame.KEYUP:
                 # On ESC, pause the game
@@ -142,6 +144,7 @@ class GameplayState(State):
                         area.process_mouse_input_event(event)
                         break
 
+        # Process logic and graphics for specific input areas
         for area in self.state_context.game_var.input_areas:
             if area.inside(mouse_pos):
                 area.tick()
