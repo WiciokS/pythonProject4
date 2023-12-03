@@ -50,9 +50,9 @@ class AppVar:
 
 class StateContext:
     def __init__(self, state_name):
+        self.app_var = AppVar(self)
         self.current_state_root = StateFactory.create_state(state_name, self)
         self.persistent_states = []
-        self.app_var = AppVar(self)
         self.game_var = GameVar(self)
 
         self.current_state_root.enter()
