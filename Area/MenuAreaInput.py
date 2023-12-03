@@ -31,7 +31,9 @@ class MenuAreaInput(AreaInput):
         # Create an instance of the AnimatedButton
         self.enter_button = AnimatedButton(
             'Sprites/Buttons/EnterButton/Enter Button1.png',
-            'Sprites/Buttons/EnterButton/Enter Button2.png'
+            'Sprites/Buttons/EnterButton/Enter Button2.png',
+            "Start Wave",
+            26
         )
 
         # Create enter button collision rect
@@ -41,6 +43,7 @@ class MenuAreaInput(AreaInput):
                                                        self.enter_button.image.get_height())
         # Position the button in the bottom corner
         self.enter_button.rect.bottomright = (self.bottom_right_x - 8, self.bottom_right_y - 8)
+
 
         # Load the coin sprites for the animation
         self.coin_sprites = [
