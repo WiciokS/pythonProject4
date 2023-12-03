@@ -61,8 +61,8 @@ class Enemy(pygame.sprite.Sprite):
             screen.blit(self.default_sprite, self.rect)
 
     def death(self):
-        self.remove()
         self.state_context.game_var.level.gold += self.default_health // 5
+        self.remove()
 
     def remove(self):
         if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
@@ -70,8 +70,8 @@ class Enemy(pygame.sprite.Sprite):
                 self.state_context.game_var.level.current_wave_index].deployed_wave_enemies.remove(self)
         for tower in self.state_context.game_var.level.deployed_towers:
             if tower.target == self:
-                tower.target = None
                 tower.possible_targets.remove(self)
+                tower.target = None
         del self
 
     def at_end_of_path(self):

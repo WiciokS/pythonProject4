@@ -1,6 +1,7 @@
 import pygame
 
 from Maps.TestMap import TestMap
+from Wave import WaveBuilder
 
 
 class LevelBuilder:
@@ -21,6 +22,12 @@ class LevelBuilder:
         self.level.available_towers.append(available_tower)
 
     def add_wave(self, wave):
+        if wave == -1:
+            waveBuilder = WaveBuilder(self.level.state_context)
+            waveBuilder.create_random_wave()
+            self.level.infinite_waves = True
+            self.level.waves.append(waveBuilder.build())
+            return
         self.level.waves.append(wave)
 
     def set_starting_gold(self, starting_gold):
@@ -48,6 +55,8 @@ class Level:
         self.waves = []
         self.current_wave_index = 0
 
+        self.infinite_waves = False
+
     def tick(self):
         if self.current_wave_index < len(self.waves):
             if not self.waves[self.current_wave_index].wave_completed():
@@ -55,6 +64,10 @@ class Level:
 
     def next_wave(self):
         if self.current_wave_index < len(self.waves):
+            if self.infinite_waves:
+                waveBuilder = WaveBuilder(self.state_context)
+                waveBuilder.create_random_wave()
+                self.waves.append(waveBuilder.build())
             self.current_wave_index += 1
 
     def completed(self):

@@ -45,6 +45,8 @@ class Mage(Tower):
             if self.target is not None:
                 if self.target not in self.possible_targets:
                     self.target = None
+                if self.target.health <= 0:
+                    self.target = None
 
             self.action_cooldown_ms_interactive -= self.state_context.app_var.app_clock.get_time()
 

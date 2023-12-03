@@ -1,3 +1,9 @@
+import random
+
+from Enemies.Goblin import Goblin
+from Enemies.Orc import Orc
+
+
 class Wave:
     def __init__(self, state_context):
         self.state_context = state_context
@@ -23,7 +29,8 @@ class Wave:
                 self.available_wave_enemies_cooldown_interactive[i] -= self.state_context.app_var.app_clock.get_time()
                 if self.available_wave_enemies_cooldown_interactive[i] <= 0:
                     self.deploy_enemy(self.available_wave_enemies[i])
-                    self.available_wave_enemies_cooldown_interactive[i] = self.available_wave_enemies_cooldown_constant[i]
+                    self.available_wave_enemies_cooldown_interactive[i] = self.available_wave_enemies_cooldown_constant[
+                        i]
                     self.available_wave_enemies_available_amount[i] -= 1
 
     def deploy_enemy(self, enemy):
@@ -60,6 +67,26 @@ class WaveBuilder:
                 self.wave.available_wave_enemies_cooldown_interactive.append(first_appearance_ms)
 
         self.wave.available_wave_enemies.append(wave_enemy)
+
+    def create_random_wave(self, possible_enemies=None):
+        rng = random.randint(100, 1000)
+        temp_possible_enemies = []
+        if possible_enemies is None:
+            temp_possible_enemies.append(Goblin)
+            temp_possible_enemies.append(Orc)
+        else:
+            temp_possible_enemies = possible_enemies
+
+        for enemy in temp_possible_enemies:
+            rng_adjust = rng // enemy.health
+            if rng_adjust <= 0:
+                rng_adjust = 1
+            rng_cd = 1000
+            if enemy.__class__.__name__ == "Goblin":
+                rng_cd = random.randint(200, 1000)
+            elif enemy.__class__.__name__ == "Orc":
+                rng_cd = random.randint(1000, 3000)
+            self.add_wave_enemy(enemy, available_amount=rng_adjust, cooldown_ms=rng_cd)
 
     def build(self):
         for i in range(len(self.wave.available_wave_enemies)):
