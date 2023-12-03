@@ -5,7 +5,7 @@ from Enemies.Orc import Orc
 from Level import LevelBuilder
 from States.State import StateFactory
 from Towers.Mage import Mage
-from Towers.ArcherTower import ArcherTower
+from Towers.Archer import Archer
 from Towers.ElementalTower import ElementalTower
 from Wave import WaveBuilder
 
@@ -24,7 +24,7 @@ class GameVar:
         level_builder.set_starting_gold(1000)
         level_builder.add_wave(-1)
         level_builder.add_available_tower(Mage)
-        level_builder.add_available_tower(ArcherTower)
+        level_builder.add_available_tower(Archer)
         level_builder.add_available_tower(ElementalTower)
         self.level = level_builder.build()
 
