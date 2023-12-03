@@ -30,6 +30,8 @@ class Mage(Tower):
                 else:
                     if enemy in self.possible_targets:
                         self.possible_targets.remove(enemy)
+                if enemy.health <= 0:
+                    enemy.remove()
 
             # If target not in possible targets, remove it
             if self.target is not None:
