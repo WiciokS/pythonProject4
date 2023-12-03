@@ -3,10 +3,8 @@ import pygame
 from Enemies.Goblin import Goblin
 from Enemies.Orc import Orc
 from Level import LevelBuilder
+from LevelLoader import LevelLoader
 from States.State import StateFactory
-from Towers.Mage import Mage
-from Towers.Archer import Archer
-from Towers.ElementalTower import ElementalTower
 from Wave import WaveBuilder
 
 
@@ -17,15 +15,26 @@ class GameVar:
         self.selected_tower = None
         self.input_areas = []
 
-        # TODO: Remove this
+        level_loader = LevelLoader()
+        level_loader.convert_level_file("Test.json")
 
-        level_builder = LevelBuilder(self.state_context)
-        level_builder.add_map("TestMap")
-        level_builder.set_starting_gold(1000)
-        level_builder.add_wave(-1)
-        level_builder.add_available_tower(Mage)
-        level_builder.add_available_tower(Archer)
-        level_builder.add_available_tower(ElementalTower)
+        level_builder = LevelBuilder(state_context)
+        level_builder.add_map(level_loader.get_map())
+        level_builder.set_starting_gold(level_loader.get_starting_gold())
+        for available_tower in level_loader.get_available_towers():
+            level_builder.add_available_tower(level_loader.get_tower_class_by_name(available_tower["name"]))
+        wave_builder = WaveBuilder(state_context)
+        for waves in level_loader.get_waves():
+            if waves["number"] != -1:
+                for enemy in waves["enemies"]:
+                    wave_builder.add_wave_enemy(level_loader.get_enemy_class_by_name(enemy["name"]), enemy["amount"],
+                                                enemy["cooldown"], enemy["first_appearance"])
+                level_builder.add_wave(wave_builder.build())
+                wave_builder.clear()
+            else:
+                level_builder.add_wave(-1)
+                break
+
         self.level = level_builder.build()
 
 

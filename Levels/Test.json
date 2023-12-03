@@ -1,0 +1,31 @@
+{
+  "map": "TestMap",
+  "starting_gold": 500,
+  "available_towers": [
+    { "name": "Mage" },
+    { "name": "Archer" }
+  ],
+  "waves": [
+    {
+      "number": 1,
+      "enemies": [
+        { "name": "Goblin", "amount": 9, "cooldown": -1, "first_appearance": -1 },
+        { "name": "Orc", "amount": 3, "cooldown": -1, "first_appearance": 2000 }
+      ]
+    },
+    {
+      "number": 2,
+      "enemies": [
+        { "name": "Goblin", "amount": 12, "cooldown": -1, "first_appearance": 1000 },
+        { "name": "Orc", "amount": 6, "cooldown": -1, "first_appearance": 2500 }
+      ]
+    },
+    {
+      "number": 3,
+      "enemies": [
+        { "name": "Goblin", "amount": 15, "cooldown": -1, "first_appearance": 1500 },
+        { "name": "Orc", "amount": 9, "cooldown": -1, "first_appearance": 3000 }
+      ]
+    }
+  ]
+}
