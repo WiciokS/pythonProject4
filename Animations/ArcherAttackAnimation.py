@@ -1,6 +1,7 @@
 import pygame
 
 from Animations.Base.Animation import Animation
+from Maps.Base.Cell import Cell
 
 
 class ArcherAttackAnimation(Animation):
@@ -8,6 +9,7 @@ class ArcherAttackAnimation(Animation):
     loop = False
 
     def __init__(self):
-        frames = [pygame.image.load(f"Sprites/Archer/Attack/Frame1.png").convert_alpha()]
+        frame = pygame.image.load(f"Sprites/Archer/Attack/Frame1.png").convert_alpha()
+        frames = [pygame.transform.scale(frame, (Cell.screen_size, Cell.screen_size))]
 
         super().__init__(frames)

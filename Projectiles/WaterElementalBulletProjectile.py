@@ -12,8 +12,9 @@ class WaterElementalBulletProjectile(Projectile):
     damage = 100
 
     def __init__(self, state_context, target, source_position):
-        default_sprite = pygame.image.load(
+        sprite = pygame.image.load(
             "Sprites/Projectile/WaterElementalBullet/Flying/WaterElementalBulletFlyingFrame1.png").convert_alpha()
+        default_sprite = pygame.transform.scale(sprite, (Cell.screen_size, Cell.screen_size))
         flying_animation = WaterElementalBulletFlyingAnimation()
         super().__init__(state_context, default_sprite, flying_animation, target, source_position, homing=False)
 
