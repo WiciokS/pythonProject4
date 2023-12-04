@@ -15,18 +15,18 @@ class PausedState(State):
         self.button_resume = AnimatedButton(button_idle_path, button_press_path, "Resume", 50, 300, 100)
         # Set position of resume button to center  of screen and 200 pixels above center
         self.button_resume.rect.center = state_context.app_var.screen.get_rect().center
-        self.button_resume.rect.centery -= 200
+        self.button_resume.rect.centery -= 100
 
         # create a quit button using AnimatedButton class
         self.button_quit = AnimatedButton(button_idle_path, button_press_path, "Quit", 50, 300, 100)
         # Set position of quit button to center  of screen after resume button
-        self.button_quit.rect.center = (self.button_resume.rect.centerx, self.button_resume.rect.centery + 400)
+        self.button_quit.rect.center = (self.button_resume.rect.centerx, self.button_resume.rect.centery + 300)
 
         # Create Back to menu Button
         self.button_back = AnimatedButton(button_idle_path, button_press_path,
                                           "Back to Menu", 50, 300, 100)
         # Set position of back button to center of screen before resume button
-        self.button_back.rect.center = (self.button_resume.rect.centerx, self.button_resume.rect.centery + 200)
+        self.button_back.rect.center = (self.button_resume.rect.centerx, self.button_resume.rect.centery + 150)
 
         # Create collision rects for the buttons
         self.button_resume_collision_rect = pygame.Rect(self.button_resume.rect)
