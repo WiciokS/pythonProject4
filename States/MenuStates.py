@@ -101,11 +101,11 @@ class MainMenuState(State):
         button_press_path = "Sprites/Buttons/GenericButton/Frame2.png"
         # create a start button using AnimatedButton class
         self.button_start = AnimatedButton(button_idle_path, button_press_path, "Start", 50, 300, 100)
-        self.button_start.rect.center = (640, 320)
+        self.button_start.rect.center = state_context.app_var.screen.get_rect().center
 
         # create a quit button using AnimatedButton class
         self.button_quit = AnimatedButton(button_idle_path, button_press_path, "Quit", 50, 300, 100)
-        self.button_quit.rect.center = (640, 520)
+        self.button_quit.rect.center = (self.button_start.rect.centerx, self.button_start.rect.centery + 200)
 
         # Create collision rects for the buttons
         self.button_start_collision_rect = pygame.Rect(self.button_start.rect)
