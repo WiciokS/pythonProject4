@@ -101,7 +101,7 @@ class MainMenuState(State):
         button_press_path = "Sprites/Buttons/GenericButton/Frame2.png"
         # create a start button using AnimatedButton class
         self.button_start = AnimatedButton(button_idle_path, button_press_path, "Start", 50, 300, 100)
-        self.button_start.rect.center = state_context.app_var.screen.get_rect().center
+        self.button_start.rect.center = (state_context.app_var.default_screen_size[0]//2, state_context.app_var.default_screen_size[1]//2)
 
         # create a quit button using AnimatedButton class
         self.button_quit = AnimatedButton(button_idle_path, button_press_path, "Quit", 50, 300, 100)
@@ -119,18 +119,15 @@ class MainMenuState(State):
         # Create collision rect for back button
         self.button_back_collision_rect = pygame.Rect(self.button_back.rect)
 
-
-
+        self.default_screen_size = state_context.app_var.default_screen_size
 
         # Load maps with scaling
         self.map_manager = MapManager('Maps/Images', 'Levels',
-                                                            state_context.app_var.screen, scale_size=(300, 200))
-
+                                      state_context.app_var.screen, scale_size=(300, 200))
 
         self.is_main_menu = True
 
         super().__init__(StateName.MAIN_MENU, state_context, root_state=True)
-
 
     def set_background_image(self, image):
         # Draw a grey screen
@@ -175,7 +172,8 @@ class MainMenuState(State):
                             for file in self.level_files:
                                 if file == map['data']['map'] + ".json":
                                     self.state_context.game_var.build_level(file)
-                                    self.switch_states(StateFactory.create_state(StateName.GAMEPLAY, self.state_context))
+                                    self.switch_states(
+                                        StateFactory.create_state(StateName.GAMEPLAY, self.state_context))
                             break
 
         # check if the button is pressed on collision
@@ -191,19 +189,18 @@ class MainMenuState(State):
                 self.button_start.turn_default()
                 self.button_quit.turn_default()
                 if self.button_start_collision_rect.collidepoint(pygame.mouse.get_pos()):
-                    #self.switch_states(StateFactory.create_state(StateName.GAMEPLAY, self.state_context))
+                    # self.switch_states(StateFactory.create_state(StateName.GAMEPLAY, self.state_context))
                     self.is_main_menu = False
                     break
                 elif self.button_quit_collision_rect.collidepoint(pygame.mouse.get_pos()):
                     self.state_context.app_var.app_running = False
                     break
 
-
-
     def enter(self):
         for file in os.listdir("Levels"):
             if file.endswith(".json"):
                 self.level_files.append(file)
+        self.state_context.app_var.screen = pygame.display.set_mode(self.default_screen_size)
 
     def exit(self):
         pass

@@ -44,7 +44,8 @@ class AppVar:
         self.app_clock = pygame.time.Clock()
         self.app_running = False
         self.fps = 60
-        self.screen = pygame.display.set_mode((1280, 640))
+        self.default_screen_size = (1280, 640)
+        self.screen = pygame.display.set_mode(self.default_screen_size)
         self.events = None
 
 
