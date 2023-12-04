@@ -29,6 +29,8 @@ class Mage(Tower):
                 else:
                     if enemy in self.possible_targets:
                         self.possible_targets.remove(enemy)
+                    if enemy == self.target:
+                        self.target = None
 
             # If there is no target, pick one
             if self.target is None:
