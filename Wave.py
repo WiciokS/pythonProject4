@@ -86,6 +86,8 @@ class WaveBuilder:
                 rng_cd = random.randint(200, 1000)
             elif enemy.__class__.__name__ == "Orc":
                 rng_cd = random.randint(1000, 3000)
+            elif enemy.__class__.__name__ == "DragonBoss":
+                rng_cd = random.randint(40000, 80000)
             self.add_wave_enemy(enemy, available_amount=rng_adjust, cooldown_ms=rng_cd)
 
     def build(self):

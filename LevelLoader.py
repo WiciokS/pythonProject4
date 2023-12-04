@@ -55,6 +55,9 @@ class LevelLoader:
         elif name == "Orc":
             from Enemies.Orc import Orc
             return Orc
+        elif name == "DragonBoss":
+            from Enemies.DragonBoss import DragonBoss
+            return DragonBoss
         else:
             raise ValueError("Invalid enemy name")
 
