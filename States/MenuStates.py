@@ -3,6 +3,7 @@ import os
 
 from States.State import State, StateName, StateFactory
 from UI.AnimatedButton import AnimatedButton
+from UI.MapManager import MapManager
 
 
 class PausedState(State):
@@ -51,6 +52,13 @@ class MainMenuState(State):
         self.button_start_collision_rect = pygame.Rect(self.button_start.rect)
         self.button_quit_collision_rect = pygame.Rect(self.button_quit.rect)
 
+        # Initialize the map manager
+        self.map_manager = MapManager()
+
+        # Load maps with scaling
+        self.map_manager.load_map('Maps/TestMap.png', 'Levels/Test.json', scale_size=(200, 150))
+        self.map_manager.load_map('Maps/BlueMagicMap.png', 'Levels/BlueMagicMap.json', scale_size=(200, 150))
+
         super().__init__(StateName.MAIN_MENU, state_context, root_state=True)
 
     def set_background_image(self, image):
@@ -67,10 +75,12 @@ class MainMenuState(State):
 
     def tick(self):
         # Set background image
-        self.set_background_image("Sprites/Background/Fon.png")
+        self.set_background_image("Sprites/Background/MainMenuBackground.png")
         # draw the button
         self.draw_button(self.button_start.image, self.button_start.rect)
         self.draw_button(self.button_quit.image, self.button_quit.rect)
+
+        self.map_manager.draw_maps_in_row(self.state_context.app_var.screen, 40, 40, 40)
         # check if the button is pressed on collision
         for event in self.state_context.app_var.events:
             if event.type == pygame.MOUSEBUTTONDOWN:
