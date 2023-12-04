@@ -64,11 +64,11 @@ class MainMenuState(State):
         self.map_manager = MapManager()
 
         # Load maps with scaling
-        self.map_manager.load_map('Maps/TestMap.png', 'Levels/Test.json', self.scale_size)
+        self.map_manager.load_map('Maps/TestMap.png', 'Levels/TestMap.json', self.scale_size)
         self.map_manager.load_map('Maps/BlueMagicMap.png', 'Levels/BlueMagicMap.json', self.scale_size)
 
         # Create map collision rects and set position to Draw maps in a row
-        self.map_manager.get_map('Test')['rect'] = pygame.Rect(self.x_position, self.y_position,
+        self.map_manager.get_map('TestMap')['rect'] = pygame.Rect(self.x_position, self.y_position,
                                                                self.scale_x, self.scale_y)
         self.map_manager.get_map('BlueMagicMap')['rect'] = pygame.Rect(self.x_position * 2 + self.scale_x,
                                                                        self.y_position,
@@ -102,14 +102,17 @@ class MainMenuState(State):
         else:
             self.map_manager.draw_maps_in_row(self.state_context.app_var.screen,
                                               self.x_position, self.y_position, self.x_offset)
-            # check which map is pressed and switch to gameplay state to the clicked map
+            # check which map is pressed and use the map name to get the json file from self.level_files when start level
             for event in self.state_context.app_var.events:
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    for map_details in self.map_manager.get_maps():
-                        if map_details['rect'].collidepoint(pygame.mouse.get_pos()):
+                if event.type == pygame.MOUSEBUTTONUP:
+                    for map in self.map_manager.get_maps():
+                        if map['rect'].collidepoint(pygame.mouse.get_pos()):
+                            # Get data from level files by name
+                            for file in self.level_files:
+                                if file == map['data']['map']:
+                                    self.state_context.game_var.build_level("Levels/" + file)
                             self.switch_states(StateFactory.create_state(StateName.GAMEPLAY, self.state_context))
                             break
-
 
         # check if the button is pressed on collision
         for event in self.state_context.app_var.events:

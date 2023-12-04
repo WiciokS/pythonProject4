@@ -43,3 +43,7 @@ class MapManager:
             screen.blit(map_image, (x_position, y_position))
             # Update the x_position for the next map image to be the width of the current one
             x_position += map_image.get_width() + x_offset
+
+    # create method which returns the json file of the map
+    def get_map_json(self, map_name):
+        return self.maps[map_name]['data']['map']
