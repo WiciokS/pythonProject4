@@ -15,16 +15,16 @@ class GameVar:
         self.selected_tower = None
         self.input_areas = []
 
-        # TODO: Remove temporary level loading
+    def build_level(self, json):
         level_loader = LevelLoader()
-        level_loader.convert_level_file("Test.json")
+        level_loader.convert_level_file(json)
 
-        level_builder = LevelBuilder(state_context)
+        level_builder = LevelBuilder(self.state_context)
         level_builder.add_map(level_loader.get_map())
         level_builder.set_starting_gold(level_loader.get_starting_gold())
         for available_tower in level_loader.get_available_towers():
             level_builder.add_available_tower(level_loader.get_tower_class_by_name(available_tower["name"]))
-        wave_builder = WaveBuilder(state_context)
+        wave_builder = WaveBuilder(self.state_context)
         for waves in level_loader.get_waves():
             if waves["number"] != -1:
                 for enemy in waves["enemies"]:
@@ -35,7 +35,6 @@ class GameVar:
             else:
                 level_builder.add_wave(-1)
                 break
-
         self.level = level_builder.build()
 
 
