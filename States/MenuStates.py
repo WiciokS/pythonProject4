@@ -51,7 +51,6 @@ class MainMenuState(State):
         self.button_start_collision_rect = pygame.Rect(self.button_start.rect)
         self.button_quit_collision_rect = pygame.Rect(self.button_quit.rect)
 
-
         super().__init__(StateName.MAIN_MENU, state_context, root_state=True)
 
     def set_background_image(self, image):
@@ -65,6 +64,7 @@ class MainMenuState(State):
     # create draw function
     def draw_button(self, image, rect):
         self.state_context.app_var.screen.blit(image, rect)
+
     def tick(self):
         # Set background image
         self.set_background_image("Sprites/Background/Fon.png")
@@ -73,18 +73,22 @@ class MainMenuState(State):
         for event in self.state_context.app_var.events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.button_start_collision_rect.collidepoint(pygame.mouse.get_pos()):
-                    self.button_start.press()
+                    if not self.button_start.is_pressed():
+                        self.button_start.turn_pressed()
                     break
                 elif self.button_quit_collision_rect.collidepoint(pygame.mouse.get_pos()):
-                    self.button_quit.press()
+                    if not self.button_quit.is_pressed():
+                        self.button_quit.turn_pressed()
                     break
             if event.type == pygame.MOUSEBUTTONUP:
+                if self.button_start.is_pressed():
+                    self.button_start.turn_default()
+                if self.button_quit.is_pressed():
+                    self.button_quit.turn_default()
                 if self.button_start_collision_rect.collidepoint(pygame.mouse.get_pos()):
-                    # Switch to the game state
                     self.switch_states(StateFactory.create_state(StateName.GAMEPLAY, self.state_context))
                     break
                 elif self.button_quit_collision_rect.collidepoint(pygame.mouse.get_pos()):
-                    # Close program
                     self.state_context.app_var.app_running = False
                     break
 
@@ -92,20 +96,10 @@ class MainMenuState(State):
         self.draw_button(self.button_start.image, self.button_start.rect)
         self.draw_button(self.button_quit.image, self.button_quit.rect)
 
-        self.button_start.update()
-        self.button_quit.update()
-
-
-
-
-
     def enter(self):
         for file in os.listdir("Levels"):
             if file.endswith(".json"):
                 self.level_files.append(file)
-
-
-
 
     def exit(self):
         pass

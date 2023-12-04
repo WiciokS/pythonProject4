@@ -6,6 +6,7 @@ from UI.AnimatedButton import AnimatedButton
 
 class MenuAreaInput(AreaInput):
     font = 18  # Font size for the gold cost text
+
     def tick_anim(self):
         # Update the coin animation
         self.coin_frame_counter += 1
@@ -13,11 +14,10 @@ class MenuAreaInput(AreaInput):
             self.coin_frame_counter = 0
             self.current_coin_frame = (self.current_coin_frame + 1) % len(self.coin_sprites)
 
-        self.enter_button.update()
-
     def tick(self):
-        pass
-
+        for event in self.state_context.app_var.events:
+            if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
+                self.process_mouse_input_event(event)
 
     def __init__(self, state_context, top_left_x=0, top_left_y=0, width=0, height=0):
         super().__init__(state_context, AreaName.MENU, top_left_x, top_left_y, width, height)
@@ -44,7 +44,6 @@ class MenuAreaInput(AreaInput):
         # Position the button in the bottom corner
         self.enter_button.rect.bottomright = (self.bottom_right_x - 8, self.bottom_right_y - 8)
 
-
         # Load the coin sprites for the animation
         self.coin_sprites = [
             pygame.image.load(f'Sprites/Coin/Coin{i}.png') for i in range(1, 6)
@@ -55,7 +54,6 @@ class MenuAreaInput(AreaInput):
 
         # Load the background sprite - replace 'path/to/background_sprite.png' with your actual file path
         self.background_sprite = pygame.image.load('Sprites/Background/Background.png')
-
 
         for index, tower_class in enumerate(state_context.game_var.level.available_towers):
             # Dynamically load the icon based on the tower's class attribute
@@ -87,13 +85,18 @@ class MenuAreaInput(AreaInput):
         # Get mouse position
         mouse_pos = pygame.mouse.get_pos()
 
-        # Check if the mouse click is within the enter button collision rect
-        if self.enter_button_collision_rect.collidepoint(mouse_pos):
+        if event.type == pygame.MOUSEBUTTONDOWN:
             # Press the button
-            self.enter_button.press()
-            # Switch to the game state
-            self.switch_to_game_state()
-
+            if self.enter_button_collision_rect.collidepoint(mouse_pos):
+                if not self.enter_button.is_pressed():
+                    self.enter_button.turn_pressed()
+        elif event.type == pygame.MOUSEBUTTONUP:
+            # Release the button
+            if self.enter_button.is_pressed():
+                self.enter_button.turn_default()
+            if self.enter_button_collision_rect.collidepoint(mouse_pos):
+                # Switch to the game state
+                self.switch_to_game_state()
 
             # Check each icon for a collision with the mouse click
         for rect, tower_index in self.icon_collision_rects:  # Corrected iteration
@@ -144,7 +147,3 @@ class MenuAreaInput(AreaInput):
 
             # Draw the gold cost text
             screen.blit(text_image, (text_x, text_y))
-
-
-
-

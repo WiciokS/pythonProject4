@@ -4,7 +4,8 @@ from UI.Button import Button
 
 
 class AnimatedButton(Button):
-    def __init__(self, default_sprite_path, pressed_sprite_path, text, text_size, button_size_x = 0, button_size_y = 0, text_color=(255, 255, 255)):
+    def __init__(self, default_sprite_path, pressed_sprite_path, text, text_size, button_size_x=0, button_size_y=0,
+                 text_color=(255, 255, 255)):
         # Load the images
         default_sprite = pygame.image.load(default_sprite_path).convert_alpha()
         pressed_sprite = pygame.image.load(pressed_sprite_path).convert_alpha()
@@ -31,27 +32,23 @@ class AnimatedButton(Button):
         # Initialize the Button class with the loaded images
         super().__init__(default_sprite, pressed_sprite)
 
-        # Attribute to control the animation
-        self.is_pressed = False
-        self.animation_time = 100  # Time in milliseconds to display the pressed image
-        self.last_press_time = None  # Time of the last button press
-
-    def press(self):
-        # Call this method to simulate a button press
-        self.image = self.pressed_sprite
-        self.is_pressed = True
-        self.last_press_time = pygame.time.get_ticks()
-
-    def update(self):
-        # Call this method in the game loop to manage the animation state
-        current_time = pygame.time.get_ticks()
-        if self.is_pressed and (current_time - self.last_press_time >= self.animation_time):
-            # After the animation time has passed, revert to the default image
+    def toggle_pressed(self):
+        # Call this method to toggle the button's state
+        if self.image is self.pressed_sprite:
             self.image = self.default_sprite
-            self.is_pressed = False
+        else:
+            self.image = self.pressed_sprite
+
+    def turn_pressed(self):
+        # Call this method to set the button's state to pressed
+        self.image = self.pressed_sprite
+
+    def turn_default(self):
+        # Call this method to set the button's state to default
+        self.image = self.default_sprite
 
     def is_pressed(self):
-        return self.is_pressed
+        return self.image is self.pressed_sprite
 
     def action(self):
         # Implement the abstract method. This can be a placeholder if no action is needed.
