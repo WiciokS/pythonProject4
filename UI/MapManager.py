@@ -3,8 +3,22 @@ import json
 import pygame
 
 class MapManager:
-    def __init__(self):
+    def __init__(self, image_dir, data_dir, screen, scale_size=None, x_offset=40, y_offset=40):
         self.maps = {}
+        self.screen = screen
+        self.scale_size = scale_size
+        self.x_offset = x_offset
+        self.y_offset = y_offset
+        self.load_all_maps(image_dir, data_dir)
+
+    def load_all_maps(self, image_dir, data_dir):
+        # List all .png files in the image directory and corresponding .json files in the data directory
+        for file in os.listdir(image_dir):
+            if file.endswith('.png'):
+                image_path = os.path.join(image_dir, file)
+                data_path = os.path.join(data_dir, file.replace('.png', '.json'))
+                if os.path.isfile(data_path):
+                    self.load_map(image_path, data_path, self.scale_size)
 
     def load_map(self, image_path, data_path, scale_size=None):
         # Load the map image
@@ -19,12 +33,16 @@ class MapManager:
             map_data = json.load(file)
 
         # If there's no 'name' key, use the file's base name as the map name
-        map_name = map_data.get('name', os.path.basename(data_path).split('.')[0])
+        map_name = map_data.get('name', os.path.basename(image_path).split('.')[0])
 
-        # Save the map data
+        # Create a rect for the map image, useful for drawing and collision detection
+        map_rect = map_image.get_rect()
+
+        # Save the map data with image and rect
         self.maps[map_name] = {
             'image': map_image,
-            'data': map_data
+            'data': map_data,
+            'rect': map_rect
         }
 
     def get_map(self, map_name):
@@ -35,15 +53,14 @@ class MapManager:
         # Return a list of all maps
         return list(self.maps.values())
 
-    def draw_maps_in_row(self, screen, x_position=0, y_position=0, x_offset=0):
+    def draw_maps_in_row(self, start_x, start_y):
+        x_position = start_x
+        y_position = start_y
         # Iterate over each map image and blit it to the screen at the calculated position
         for map_details in self.get_maps():
             map_image = map_details['image']
-            # Blit the map image at the current position
-            screen.blit(map_image, (x_position, y_position))
-            # Update the x_position for the next map image to be the width of the current one
-            x_position += map_image.get_width() + x_offset
-
-    # create method which returns the json file of the map
-    def get_map_json(self, map_name):
-        return self.maps[map_name]['data']['map']
+            map_rect = map_details['rect']
+            map_rect.topleft = (x_position, y_position)
+            self.screen.blit(map_image, map_rect)
+            # Update the x_position for the next map image
+            x_position += map_rect.width + self.x_offset

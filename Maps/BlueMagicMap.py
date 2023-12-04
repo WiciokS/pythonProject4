@@ -6,7 +6,7 @@ from Maps.Base.Map import Map
 
 class BlueMagicMap(Map):
     def __init__(self):
-        self.map_sprite = pygame.image.load("Maps/BlueMagicMap.png")
+        self.map_sprite = pygame.image.load("Maps/Images/BlueMagicMap.png")
         self.map_sprite = pygame.transform.scale(self.map_sprite, (960, 640))
 
         # Create cells

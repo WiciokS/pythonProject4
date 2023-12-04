@@ -6,7 +6,7 @@ from Maps.Base.Map import Map
 
 class TestMap(Map):
     def __init__(self):
-        self.map_sprite = pygame.image.load("Maps/TestMap.png")
+        self.map_sprite = pygame.image.load("Maps/Images/TestMap.png")
 
         # Create cells
         cells = []

@@ -52,27 +52,20 @@ class MainMenuState(State):
         self.button_start_collision_rect = pygame.Rect(self.button_start.rect)
         self.button_quit_collision_rect = pygame.Rect(self.button_quit.rect)
 
-        # Write x and y position offset and scale size for the map
-        self.x_position = 40
-        self.y_position = 40
-        self.x_offset = 40
-        self.scale_size = (300, 200)
-        self.scale_x = 300
-        self.scale_y = 200
+        # Create Back Button
+        self.button_back = AnimatedButton(button_idle_path, button_press_path,
+                                          "Back", 50, 300, 100)
+        # Set position of back button to left bottom corner
+        self.button_back.rect.bottomleft = (40, 600)
+        # Create collision rect for back button
+        self.button_back_collision_rect = pygame.Rect(self.button_back.rect)
 
-        # Initialize the map manager
-        self.map_manager = MapManager()
+
+
 
         # Load maps with scaling
-        self.map_manager.load_map('Maps/TestMap.png', 'Levels/TestMap.json', self.scale_size)
-        self.map_manager.load_map('Maps/BlueMagicMap.png', 'Levels/BlueMagicMap.json', self.scale_size)
-
-        # Create map collision rects and set position to Draw maps in a row
-        self.map_manager.get_map('TestMap')['rect'] = pygame.Rect(self.x_position, self.y_position,
-                                                               self.scale_x, self.scale_y)
-        self.map_manager.get_map('BlueMagicMap')['rect'] = pygame.Rect(self.x_position * 2 + self.scale_x,
-                                                                       self.y_position,
-                                                                       self.scale_x, self.scale_y)
+        self.map_manager = MapManager('Maps/Images', 'Levels',
+                                                            state_context.app_var.screen, scale_size=(300, 200))
 
 
         self.is_main_menu = True
@@ -100,8 +93,20 @@ class MainMenuState(State):
             self.draw_button(self.button_start.image, self.button_start.rect)
             self.draw_button(self.button_quit.image, self.button_quit.rect)
         else:
-            self.map_manager.draw_maps_in_row(self.state_context.app_var.screen,
-                                              self.x_position, self.y_position, self.x_offset)
+            self.draw_button(self.button_back.image, self.button_back.rect)
+            # On button back pressed, switch to main menu true
+
+            for event in self.state_context.app_var.events:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.button_back_collision_rect.collidepoint(pygame.mouse.get_pos()):
+                        self.button_back.turn_pressed()
+                        break
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.button_back.turn_default()
+                    if self.button_back_collision_rect.collidepoint(pygame.mouse.get_pos()):
+                        self.is_main_menu = True
+                        break
+            self.map_manager.draw_maps_in_row(40, 40)
             # check which map is pressed and use the map name to get the json file from self.level_files when start level
             for event in self.state_context.app_var.events:
                 if event.type == pygame.MOUSEBUTTONUP:
