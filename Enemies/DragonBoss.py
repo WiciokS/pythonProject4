@@ -13,6 +13,6 @@ class DragonBoss(Enemy):
 
     def __init__(self, state_context, path_cells):
         self.default_sprite = pygame.image.load("Sprites/Dragon/DragonDefault.png").convert_alpha()
-        self.default_sprite = pygame.transform.scale(self.default_sprite, (Cell.screen_size, Cell.screen_size))
+        self.default_sprite = pygame.transform.scale(self.default_sprite, (Cell.screen_size * 8, Cell.screen_size * 8))
         self.move_anim = None
         super().__init__(state_context, self.default_sprite, path_cells, self.move_anim)
