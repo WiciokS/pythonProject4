@@ -8,13 +8,72 @@ from UI.MapManager import MapManager
 
 class PausedState(State):
     def __init__(self, state_context):
+
+        # create a resume button using AnimatedButton class
+        button_idle_path = "Sprites/Buttons/GenericButton/Frame1.png"
+        button_press_path = "Sprites/Buttons/GenericButton/Frame2.png"
+        self.button_resume = AnimatedButton(button_idle_path, button_press_path, "Resume", 50, 300, 100)
+        # Set position of resume button to center  of screen and 200 pixels above center
+        self.button_resume.rect.center = state_context.app_var.screen.get_rect().center
+        self.button_resume.rect.centery -= 200
+
+        # create a quit button using AnimatedButton class
+        self.button_quit = AnimatedButton(button_idle_path, button_press_path, "Quit", 50, 300, 100)
+        # Set position of quit button to center  of screen after resume button
+        self.button_quit.rect.center = (self.button_resume.rect.centerx, self.button_resume.rect.centery + 400)
+
+        # Create Back to menu Button
+        self.button_back = AnimatedButton(button_idle_path, button_press_path,
+                                          "Back to Menu", 50, 300, 100)
+        # Set position of back button to center of screen before resume button
+        self.button_back.rect.center = (self.button_resume.rect.centerx, self.button_resume.rect.centery + 200)
+
+        # Create collision rects for the buttons
+        self.button_resume_collision_rect = pygame.Rect(self.button_resume.rect)
+        self.button_quit_collision_rect = pygame.Rect(self.button_quit.rect)
+        self.button_back_collision_rect = pygame.Rect(self.button_back.rect)
+
         super().__init__(StateName.PAUSE, state_context, root_state=True)
 
     def tick(self):
         super().tick()
 
         # Draw a black screen
-        self.state_context.app_var.screen.fill((0, 0, 0))
+        self.state_context.app_var.screen.fill((128, 128, 128))
+
+        # draw the button
+        self.state_context.app_var.screen.blit(self.button_resume.image, self.button_resume.rect)
+        self.state_context.app_var.screen.blit(self.button_quit.image, self.button_quit.rect)
+        self.state_context.app_var.screen.blit(self.button_back.image, self.button_back.rect)
+
+        # check if the button is pressed on collision
+        for event in self.state_context.app_var.events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.button_resume_collision_rect.collidepoint(pygame.mouse.get_pos()):
+                    self.button_resume.turn_pressed()
+                    break
+                elif self.button_quit_collision_rect.collidepoint(pygame.mouse.get_pos()):
+                    self.button_quit.turn_pressed()
+                    break
+                elif self.button_back_collision_rect.collidepoint(pygame.mouse.get_pos()):
+                    self.button_back.turn_pressed()
+                    break
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.button_resume.turn_default()
+                self.button_quit.turn_default()
+                self.button_back.turn_default()
+                if self.button_resume_collision_rect.collidepoint(pygame.mouse.get_pos()):
+                    for state in self.state_context.persistent_states:
+                        if state.state_name is StateName.GAMEPLAY:
+                            self.switch_states(state)
+                            break
+                    Exception("No gameplay state found to unpause to.")
+                elif self.button_quit_collision_rect.collidepoint(pygame.mouse.get_pos()):
+                    self.state_context.app_var.app_running = False
+                    break
+                elif self.button_back_collision_rect.collidepoint(pygame.mouse.get_pos()):
+                    self.switch_states(StateFactory.create_state(StateName.MAIN_MENU, self.state_context))
+                    Exception("No main menu state found to go back to.")
 
         # On ESC, unpause the game
         for event in self.state_context.app_var.events:
