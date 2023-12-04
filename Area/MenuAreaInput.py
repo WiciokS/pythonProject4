@@ -7,7 +7,7 @@ from UI.AnimatedButton import AnimatedButton
 class MenuAreaInput(AreaInput):
     font = 18  # Font size for the gold cost text
 
-    def tick_anim(self):
+    def alternative_tick(self):
         # Update the coin animation
         self.coin_frame_counter += 1
         if self.coin_frame_counter >= self.coin_animation_rate:
@@ -23,7 +23,7 @@ class MenuAreaInput(AreaInput):
     def __init__(self, state_context, top_left_x=0, top_left_y=0, width=0, height=0):
         super().__init__(state_context, AreaName.MENU, top_left_x, top_left_y, width, height)
         self.tower_icons = []
-        self.tower_backgrounds = []  # List to hold the background sprites
+        self.tower_backgrounds = []
         self.gold_cost_texts = []
         self.icon_collision_rects = []
 
@@ -75,36 +75,32 @@ class MenuAreaInput(AreaInput):
             # Increment y_offset for the next icon
             y_offset += icon_sprite.get_height() + 64
 
-    def switch_to_game_state(self):
-        # The action that will be executed when the button is clicked
-        if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
-            self.state_context.current_state_root.switch_substate(
-                StateFactory.create_state(StateName.ACTIVE_GAME, self.state_context)
-            )
-
     def process_mouse_input_event(self, event):
         # Get mouse position
         mouse_pos = pygame.mouse.get_pos()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Press the button
-            if self.enter_button_collision_rect.collidepoint(mouse_pos):
+            if self.enter_button_collision_rect.collidepoint(mouse_pos):  # If the mouse is over the button
                 self.enter_button.turn_pressed()
         elif event.type == pygame.MOUSEBUTTONUP:
             self.enter_button.turn_default()
-            if self.enter_button_collision_rect.collidepoint(mouse_pos):
-                # Switch to the game state
-                self.switch_to_game_state()
+            if self.enter_button_collision_rect.collidepoint(mouse_pos):  # If the mouse is over the button
+                # Switch to the active game state
+                if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
+                    self.state_context.current_state_root.switch_substate(
+                        StateFactory.create_state(StateName.ACTIVE_GAME, self.state_context)
+                    )
 
-            # Check each icon for a collision with the mouse click
-        for rect, tower_index in self.icon_collision_rects:  # Corrected iteration
-            if rect.collidepoint(mouse_pos):
-                # Create the selected tower based on the clicked icon
+        # Check each tower icon for a collision with the mouse click
+        for rect, tower_index in self.icon_collision_rects:
+            if rect.collidepoint(mouse_pos):  # If the mouse is over the icon
+                # Create the selected tower if enough gold
                 if (self.state_context.game_var.level.gold >=
                         self.state_context.game_var.level.available_towers[tower_index].cost):
                     self.state_context.game_var.selected_tower = self.state_context.game_var.level.available_towers[
                         tower_index](self.state_context)
-                break  # Exit the loop once a collision is found
+                break
 
     def draw(self, screen):
         # Draw background for the menu area

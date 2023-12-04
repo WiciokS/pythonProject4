@@ -1,5 +1,6 @@
 import random
 
+from Enemies.Dragon import Dragon
 from Enemies.Goblin import Goblin
 from Enemies.Orc import Orc
 
@@ -74,6 +75,7 @@ class WaveBuilder:
         if possible_enemies is None:
             temp_possible_enemies.append(Goblin)
             temp_possible_enemies.append(Orc)
+            temp_possible_enemies.append(Dragon)
         else:
             temp_possible_enemies = possible_enemies
 
@@ -83,11 +85,11 @@ class WaveBuilder:
                 rng_adjust = 1
             rng_cd = 1000
             if enemy.__class__.__name__ == "Goblin":
-                rng_cd = random.randint(200, 1000)
+                rng_cd = random.randint(Goblin.default_cooldown_ms//2, Goblin.default_cooldown_ms*2)
             elif enemy.__class__.__name__ == "Orc":
-                rng_cd = random.randint(1000, 3000)
-            elif enemy.__class__.__name__ == "DragonBoss":
-                rng_cd = random.randint(40000, 80000)
+                rng_cd = random.randint(Orc.default_cooldown_ms//2, Orc.default_cooldown_ms*2)
+            elif enemy.__class__.__name__ == "Dragon":
+                rng_cd = random.randint(Dragon.default_cooldown_ms//2, Dragon.default_cooldown_ms*2)
             self.add_wave_enemy(enemy, available_amount=rng_adjust, cooldown_ms=rng_cd)
 
     def build(self):

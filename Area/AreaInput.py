@@ -26,7 +26,6 @@ class AreaInput:
         self.top_left_y = top_left_y
         self.bottom_right_x = width
         self.bottom_right_y = height
-        pass
 
     def move_by(self, move_direction, amount):
         if move_direction == MoveDirection.FROM_TOP:
@@ -57,5 +56,5 @@ class AreaInput:
         pass
 
     @abstractmethod
-    def tick_anim(self):
+    def alternative_tick(self):
         pass
