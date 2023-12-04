@@ -13,11 +13,12 @@ class MenuAreaInput(AreaInput):
         if self.coin_frame_counter >= self.coin_animation_rate:
             self.coin_frame_counter = 0
             self.current_coin_frame = (self.current_coin_frame + 1) % len(self.coin_sprites)
-
-    def tick(self):
         for event in self.state_context.app_var.events:
             if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
                 self.process_mouse_input_event(event)
+
+    def tick(self):
+        pass
 
     def __init__(self, state_context, top_left_x=0, top_left_y=0, width=0, height=0):
         super().__init__(state_context, AreaName.MENU, top_left_x, top_left_y, width, height)
@@ -88,12 +89,9 @@ class MenuAreaInput(AreaInput):
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Press the button
             if self.enter_button_collision_rect.collidepoint(mouse_pos):
-                if not self.enter_button.is_pressed():
-                    self.enter_button.turn_pressed()
+                self.enter_button.turn_pressed()
         elif event.type == pygame.MOUSEBUTTONUP:
-            # Release the button
-            if self.enter_button.is_pressed():
-                self.enter_button.turn_default()
+            self.enter_button.turn_default()
             if self.enter_button_collision_rect.collidepoint(mouse_pos):
                 # Switch to the game state
                 self.switch_to_game_state()

@@ -1,5 +1,6 @@
 import pygame
 
+from Maps.BlueMagicMap import BlueMagicMap
 from Maps.TestMap import TestMap
 from Wave import WaveBuilder
 
@@ -12,6 +13,8 @@ class LevelBuilder:
     def create_level_map(map_name):
         if map_name == "TestMap":
             return TestMap()
+        elif map_name == "BlueMagicMap":
+            return BlueMagicMap()
         else:
             raise ValueError("Invalid map name")
 

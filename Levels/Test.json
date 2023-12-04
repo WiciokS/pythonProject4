@@ -1,5 +1,5 @@
 {
-  "map": "TestMap",
+  "map": "BlueMagicMap",
   "starting_gold": 500,
   "available_towers": [
     { "name": "Mage" },

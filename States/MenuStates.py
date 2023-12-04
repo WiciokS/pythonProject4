@@ -68,23 +68,21 @@ class MainMenuState(State):
     def tick(self):
         # Set background image
         self.set_background_image("Sprites/Background/Fon.png")
-
+        # draw the button
+        self.draw_button(self.button_start.image, self.button_start.rect)
+        self.draw_button(self.button_quit.image, self.button_quit.rect)
         # check if the button is pressed on collision
         for event in self.state_context.app_var.events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.button_start_collision_rect.collidepoint(pygame.mouse.get_pos()):
-                    if not self.button_start.is_pressed():
-                        self.button_start.turn_pressed()
+                    self.button_start.turn_pressed()
                     break
                 elif self.button_quit_collision_rect.collidepoint(pygame.mouse.get_pos()):
-                    if not self.button_quit.is_pressed():
-                        self.button_quit.turn_pressed()
+                    self.button_quit.turn_pressed()
                     break
             if event.type == pygame.MOUSEBUTTONUP:
-                if self.button_start.is_pressed():
-                    self.button_start.turn_default()
-                if self.button_quit.is_pressed():
-                    self.button_quit.turn_default()
+                self.button_start.turn_default()
+                self.button_quit.turn_default()
                 if self.button_start_collision_rect.collidepoint(pygame.mouse.get_pos()):
                     self.switch_states(StateFactory.create_state(StateName.GAMEPLAY, self.state_context))
                     break
@@ -92,9 +90,7 @@ class MainMenuState(State):
                     self.state_context.app_var.app_running = False
                     break
 
-        # draw the button
-        self.draw_button(self.button_start.image, self.button_start.rect)
-        self.draw_button(self.button_quit.image, self.button_quit.rect)
+
 
     def enter(self):
         for file in os.listdir("Levels"):
