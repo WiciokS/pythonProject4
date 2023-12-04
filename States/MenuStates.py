@@ -109,9 +109,9 @@ class MainMenuState(State):
                         if map['rect'].collidepoint(pygame.mouse.get_pos()):
                             # Get data from level files by name
                             for file in self.level_files:
-                                if file == map['data']['map']:
-                                    self.state_context.game_var.build_level("Levels/" + file)
-                            self.switch_states(StateFactory.create_state(StateName.GAMEPLAY, self.state_context))
+                                if file == map['data']['map'] + ".json":
+                                    self.state_context.game_var.build_level(file)
+                                    self.switch_states(StateFactory.create_state(StateName.GAMEPLAY, self.state_context))
                             break
 
         # check if the button is pressed on collision
