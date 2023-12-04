@@ -10,7 +10,7 @@ from Towers.Base.Tower import Tower
 
 class Archer(Tower):
     icon_path = 'Sprites/Archer/ArcherDefault.png'
-    cost = 100
+    cost = 300
     action_cooldown_ms = 300
     range = 5
 
@@ -27,25 +27,9 @@ class Archer(Tower):
             ArrowBulletProjectile(self.state_context, self.target, self.screen_position))
 
     def action_condition(self):
-        if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
-            for enemy in self.state_context.game_var.level.waves[
-                    self.state_context.game_var.level.current_wave_index].deployed_wave_enemies:
-                if self.is_in_range(enemy):
-                    if enemy not in self.possible_targets:
-                        self.possible_targets.append(enemy)
-                else:
-                    if enemy in self.possible_targets:
-                        self.possible_targets.remove(enemy)
-                    if enemy == self.target:
-                        self.target = None
-
-            # If there is no target, pick one
-            if self.target is None:
-                if len(self.possible_targets) > 0:
-                    self.target = self.possible_targets[0]
-
-            self.action_cooldown_ms_interactive -= self.state_context.app_var.app_clock.get_time()
-
-            if self.target is not None:
-                return True
-        return False
+        self.pick_enemy_target_in_range()
+        self.action_cooldown_ms_interactive -= self.state_context.app_var.app_clock.get_time()
+        if self.target is not None:
+            return True
+        else:
+            return False

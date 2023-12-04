@@ -14,10 +14,12 @@ class Projectile(Sprite):
         self.state_context = state_context
         self.flying_animation = flying_animation
         self.default_sprite = default_sprite
-        self.homing = homing
-        self.rect = self.default_sprite.get_rect()
+
+        self.homing = homing  # Does the projectile home in on the target?
         self.target = target
+
         self.screen_position = source_position
+        self.rect = self.default_sprite.get_rect()
         self.rect.center = (int(self.screen_position.x), int(self.screen_position.y))
         if self.flying_animation is not None:
             self.flying_animation.play()
@@ -27,7 +29,6 @@ class Projectile(Sprite):
     def tick(self):
         self.flying_animation.tick()
         self.move()
-        self.rect.center = (int(self.screen_position.x), int(self.screen_position.y))
 
     def move(self):
         movement = self.target.screen_position - self.screen_position
@@ -37,6 +38,7 @@ class Projectile(Sprite):
         else:
             self.screen_position = self.target.screen_position
             self.hit()
+        self.rect.center = (int(self.screen_position.x), int(self.screen_position.y))
 
     def draw(self, screen):
         if self.flying_animation is not None and self.flying_animation.playing:

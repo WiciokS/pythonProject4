@@ -11,14 +11,7 @@ class PrepareGameState(State):
 
     def tick(self):
         for tower in self.state_context.game_var.level.deployed_towers:
-            tower.tick_anim()
-        for event in self.state_context.app_var.events:
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_SPACE:
-                    if self.state_context.game_var.level.current_wave_index < len(
-                            self.state_context.game_var.level.waves):
-                        self.switch_states(StateFactory.create_state(StateName.ACTIVE_GAME, self.state_context))
-                        break
+            tower.alternative_tick()
 
     def enter(self):
         pass
@@ -34,7 +27,10 @@ class ActiveGameState(State):
     def tick(self):
         for tower in self.state_context.game_var.level.deployed_towers:
             tower.tick()
+            tower.alternative_tick()
         self.state_context.game_var.level.tick()
+
+        # If the wave is completed, go to the next wave and set state to prepare game
         if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
             if (self.state_context.game_var.level.waves[self.state_context.game_var.level.current_wave_index]
                     .wave_completed()):
@@ -147,9 +143,10 @@ class GameplayState(State):
         for area in self.state_context.game_var.input_areas:
             if area.inside(mouse_pos):
                 area.tick()
-            area.tick_anim()
+            area.alternative_tick()
             area.draw(self.state_context.app_var.screen)
 
+        # If the level is completed, draw a text in the middle saying you won
         if self.state_context.game_var.level.current_wave_index >= len(self.state_context.game_var.level.waves):
             if self.state_context.game_var.level.waves[
                     self.state_context.game_var.level.current_wave_index - 1].wave_completed():
@@ -164,6 +161,7 @@ class GameplayState(State):
         super().tick()
 
     def enter(self):
+        # If states are not persistent, add them to the persistent states list
         if self not in self.state_context.persistent_states:
             self.state_context.persistent_states.append(self)
             self.switch_substate(StateFactory.create_state(StateName.PREPARE_GAME, self.state_context))
@@ -171,6 +169,8 @@ class GameplayState(State):
             self.state_context.app_var.screen = pygame.display.set_mode(
                 (self.state_context.game_var.level.map.width + 128,
                  self.state_context.game_var.level.map.height))
+
+        # Add input areas
         if len(self.state_context.game_var.input_areas) == 0:
             map_area = MapAreaInput(self.state_context,
                                     top_left_x=0,

@@ -78,13 +78,12 @@ class Tower(pygame.sprite.Sprite):
         self.screen_position = pygame.Vector2((self.rect.centerx, self.rect.centery))
         if self.cell is None:
             return
-        self.tick_anim()
         if self.action_condition():
             if self.action_cooldown_ms_interactive <= 0:
                 self.action()
                 self.action_cooldown_ms_interactive = self.action_cooldown_ms
 
-    def tick_anim(self):
+    def alternative_tick(self):
         if self.action_anim is not None and self.action_anim.playing:
             self.action_anim.tick()
 
@@ -104,3 +103,21 @@ class Tower(pygame.sprite.Sprite):
     def return_to_last_cell(self):
         self.place(self.last_cell)
         self.attach(self.last_cell)
+
+    def pick_enemy_target_in_range(self):
+        if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
+            for enemy in self.state_context.game_var.level.waves[
+                    self.state_context.game_var.level.current_wave_index].deployed_wave_enemies:
+                if self.is_in_range(enemy):
+                    if enemy not in self.possible_targets:
+                        self.possible_targets.append(enemy)
+                else:
+                    if enemy in self.possible_targets:
+                        self.possible_targets.remove(enemy)
+                    if enemy == self.target:
+                        self.target = None
+
+            # If there is no target, pick one
+            if self.target is None:
+                if len(self.possible_targets) > 0:
+                    self.target = self.possible_targets[0]

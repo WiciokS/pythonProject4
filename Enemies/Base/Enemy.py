@@ -11,14 +11,17 @@ class Enemy(pygame.sprite.Sprite):
 
     def __init__(self, state_context, default_sprite, path_cells, move_anim=None):
         pygame.sprite.Sprite.__init__(self)
-        self.default_health = self.health
         self.state_context = state_context
+        self.default_health = self.health
         self.default_speed = self.speed
         self.default_sprite = default_sprite
-        self.move_anim = move_anim
-        self.path_cells = path_cells
         self.rect = self.default_sprite.get_rect()
+
+        self.move_anim = move_anim
+
+        self.path_cells = path_cells
         self.path_index = 0
+
         self.screen_position = pygame.Vector2((path_cells[0].get_screen_x(), path_cells[0].get_screen_y()))
 
         self.push_speed = 8
@@ -42,7 +45,7 @@ class Enemy(pygame.sprite.Sprite):
 
         movement = target_screen_position - self.screen_position
 
-        if self.push_tick:
+        if self.push_tick:  # If we're being pushed, move in the direction of the push
             direction = movement.normalize()
             if self.push_distance_screen_x > 0:
                 self.speed += direction[0] * self.push_speed
@@ -65,7 +68,8 @@ class Enemy(pygame.sprite.Sprite):
             self.path_index += 1
 
         if self.push_tick:
-            if abs(self.push_distance_screen_x) < self.push_speed and abs(self.push_distance_screen_y) < self.push_speed:
+            if (abs(self.push_distance_screen_x) < self.push_speed and
+                    abs(self.push_distance_screen_y) < self.push_speed):
                 self.push_tick = False
                 self.speed = self.default_speed
 
@@ -74,7 +78,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self.rect.center = (int(self.screen_position.x), int(self.screen_position.y))
 
-    def spawn(self):
+    def place_on_start_point(self):
         if self.default_sprite is not None:
             self.rect = self.default_sprite.get_rect(
                 center=(self.path_cells[0].get_screen_x(), self.path_cells[0].get_screen_y()))
@@ -88,13 +92,15 @@ class Enemy(pygame.sprite.Sprite):
             screen.blit(self.default_sprite, self.rect)
 
     def death(self):
-        self.state_context.game_var.level.gold += self.default_health // 5
+        self.state_context.game_var.level.gold += self.default_health // 3
         self.remove()
 
     def remove(self):
+        # Remove the enemy from the wave
         if self.state_context.game_var.level.current_wave_index < len(self.state_context.game_var.level.waves):
             self.state_context.game_var.level.waves[
                 self.state_context.game_var.level.current_wave_index].deployed_wave_enemies.remove(self)
+        # Remove the enemy from towers' possible targets and target
         for tower in self.state_context.game_var.level.deployed_towers:
             if self in tower.possible_targets:
                 tower.possible_targets.remove(self)

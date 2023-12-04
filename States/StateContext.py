@@ -15,6 +15,7 @@ class GameVar:
         self.selected_tower = None
         self.input_areas = []
 
+        # TODO: Remove temporary level loading
         level_loader = LevelLoader()
         level_loader.convert_level_file("Test.json")
 
