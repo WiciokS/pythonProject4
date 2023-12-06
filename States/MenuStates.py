@@ -4,6 +4,7 @@ import os
 from States.State import State, StateName, StateFactory
 from UI.AnimatedButton import AnimatedButton
 from UI.MapManager import MapManager
+from UI.TextBox import TextBox
 
 
 class PausedState(State):
@@ -101,7 +102,8 @@ class MainMenuState(State):
         button_press_path = "Sprites/Buttons/GenericButton/Frame2.png"
         # create a start button using AnimatedButton class
         self.button_start = AnimatedButton(button_idle_path, button_press_path, "Start", 50, 300, 100)
-        self.button_start.rect.center = (state_context.app_var.default_screen_size[0]//2, state_context.app_var.default_screen_size[1]//2)
+        self.button_start.rect.center = (state_context.app_var.default_screen_size[0]//2,
+                                         state_context.app_var.default_screen_size[1]//2)
 
         # create a quit button using AnimatedButton class
         self.button_quit = AnimatedButton(button_idle_path, button_press_path, "Quit", 50, 300, 100)
@@ -120,6 +122,15 @@ class MainMenuState(State):
         self.button_back_collision_rect = pygame.Rect(self.button_back.rect)
 
         self.default_screen_size = state_context.app_var.default_screen_size
+
+        # Add text above the text box and do it bold
+        self.text_box_text = (pygame.font.SysFont("Arial", 30, bold=True)
+                              .render("Enter your name:", True,
+                                      (0, 0, 0)))
+
+        # Create TextBox
+        self.text_box = TextBox(self.button_start.rect.centerx - 100, self.button_start.rect.centery - 200,
+                                200, 40, regex_pattern="^[A-Za-z0-9 ]+$")  # Example regex pattern
 
         # Load maps with scaling
         self.map_manager = MapManager('Maps/Images', 'Levels',
@@ -144,10 +155,24 @@ class MainMenuState(State):
     def tick(self):
         # Set background image
         self.set_background_image("Sprites/Background/MainMenuBackground.png")
+
+
+
         # draw the button
         if self.is_main_menu:
             self.draw_button(self.button_start.image, self.button_start.rect)
             self.draw_button(self.button_quit.image, self.button_quit.rect)
+
+            # Draw text above the text box
+            self.state_context.app_var.screen.blit(self.text_box_text, (self.text_box.rect.x,
+                                                                        self.text_box.rect.y - 50))
+
+            # Handle TextBox events
+            for event in self.state_context.app_var.events:
+                self.text_box.handle_event(event)
+
+            # Draw the TextBox
+            self.text_box.draw(self.state_context.app_var.screen)
         else:
             self.draw_button(self.button_back.image, self.button_back.rect)
             # On button back pressed, switch to main menu true

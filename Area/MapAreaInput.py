@@ -7,6 +7,7 @@ from States.State import StateName
 class MapAreaInput(AreaInput):
 
     def __init__(self, state_context, top_left_x=0, top_left_y=0, width=0, height=0):
+
         super().__init__(state_context, AreaName.MAP, top_left_x, top_left_y, width, height)
 
     def tick(self):

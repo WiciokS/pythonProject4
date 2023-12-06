@@ -29,6 +29,8 @@ class MenuAreaInput(AreaInput):
 
         y_offset = 64  # Starting y position for the first icon
 
+        self.text = ""
+
         # Create an instance of the AnimatedButton
         self.enter_button = AnimatedButton(
             'Sprites/Buttons/EnterButton/Enter Button1.png',
@@ -105,18 +107,27 @@ class MenuAreaInput(AreaInput):
     def draw(self, screen):
         # Draw background for the menu area
         screen.fill((128, 128, 128), (self.top_left_x, self.top_left_y, self.bottom_right_x, self.bottom_right_y))
+        # Create a text from output.txt file and put it at the top center of the screen
+
+        with open("UI/output.txt", "r") as file:
+            self.text = file.read()
+
+        self.text = (pygame.font.SysFont("Arial", 20)
+                     .render(self.text, True, (0, 0, 0)))
+        # Draw the text from output.txt file lower than gold amount, but above the Towers
+        screen.blit(self.text, (self.top_left_x + 16, self.top_left_y + 8))
 
         # Draw the current gold amount
         gold_amount_text = pygame.font.SysFont("Arial", self.font).render(
             str(self.state_context.game_var.level.gold), True, (0, 0, 0)
         )
-        screen.blit(gold_amount_text, (self.top_left_x + 32, self.top_left_y + 14))
+        screen.blit(gold_amount_text, (self.top_left_x + 32, self.top_left_y + 30))
 
         # Draw the animated coin sprite near the total gold amount
         coin_sprite = self.coin_sprites[self.current_coin_frame]
         # Position the coin sprite to the left of the gold amount text
         coin_x = self.top_left_x + 8
-        coin_y = self.top_left_y + 16
+        coin_y = self.top_left_y + 32
         screen.blit(coin_sprite, (coin_x, coin_y))
 
         # Draw the enter button
